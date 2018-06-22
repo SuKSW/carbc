@@ -1,12 +1,14 @@
-import network.Peer;
-import org.slf4j.impl.SimpleLogger;
+import Interfaces.Cli;
+import constants.Constants;
 
 public class Carbc {
     public static void main(String[] args) {
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
-        Peer peer = Peer.getInstance();
+        //Set the main directory as home
+        System.setProperty(Constants.CARBC_HOME, System.getProperty("user.dir"));
 
-
-        peer.init(peerConfig);
+        //Start the cli
+        Cli.start(args);
     }
+
+
 }

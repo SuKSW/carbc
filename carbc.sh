@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 
-arg1=$1
-arg2=$2
-
 ##directory where jar file is located
-dir=/directory-path/to/jar-file/
+dir=./target
 
 ##jar file name
-jar_name=json-simple-1.1.1.jar
+jar_name=carbc-0.0.1-jar-with-dependencies.jar
 
-## Perform some validation on input arguments, one example below
-if [ -z "$1" ] || [ -z "$2" ]; then
+## Perform some validation on input arguments
+if [ -z "$1" ]; then
         echo "Missing arguments, exiting.."
-        echo "Usage : $0 arg1 arg2"
+        echo "Usage : $0 arg1"
         exit 1
 fi
 
-java -jar $dir/$jar_name arg1 arg2
+java -jar $dir/$jar_name $1 $2

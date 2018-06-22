@@ -30,7 +30,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Hello</mainClass>
+                            <mainClass>Carbc</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
