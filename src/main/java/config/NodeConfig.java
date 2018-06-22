@@ -5,13 +5,13 @@ import network.Neighbour;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeerConfig {
+public class NodeConfig {
     private final Long peerID;
     private int listenerPort;
     private List<Neighbour> neighbours;
 
 
-    public PeerConfig(Long peerID) {
+    public NodeConfig(Long peerID) {
         this.peerID = peerID;
         this.neighbours = new ArrayList<>();
     }
@@ -31,6 +31,7 @@ public class PeerConfig {
     public void addNeighbour(Neighbour neighbour) {
         this.neighbours.add(neighbour);
     }
+
 
     public List<Neighbour> getNeighbours() {
         return neighbours;

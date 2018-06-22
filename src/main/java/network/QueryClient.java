@@ -1,8 +1,15 @@
 package network;
 
-import config.PeerConfig;
+import config.NodeConfig;
 
-public class QueryClient {
-    private PeerConfig peerConfig;
+class QueryClient {
+    private NodeConfig nodeConfig;
 
+    QueryClient(NodeConfig nodeConfig) {
+        this.nodeConfig = nodeConfig;
+    }
+
+    void init() {
+        // add netty client channels
+    }
 }

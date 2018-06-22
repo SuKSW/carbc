@@ -1,25 +1,19 @@
 package network;
 
-import config.PeerConfig;
+import config.NodeConfig;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Listener {
-    private ServerSocket serverSocket;
-    private PeerConfig peerConfig;
+class Listener {
+    private NodeConfig nodeConfig;
 
-    public Listener(PeerConfig peerConfig) {
-        this.peerConfig = peerConfig;
+    Listener(NodeConfig nodeConfig) {
+        this.nodeConfig = nodeConfig;
     }
 
-    public void init(){
-        try {
-            serverSocket = new ServerSocket(this.peerConfig.getListenerPort());
-            Socket clientSocket = serverSocket.accept();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    void init(){
+        //add netty server channels
     }
 }
