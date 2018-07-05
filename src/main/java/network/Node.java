@@ -2,6 +2,8 @@ package network;
 
 import config.CommonConfigHolder;
 import config.NodeConfig;
+import network.Client.Client;
+import network.Listener.Listener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,13 +49,14 @@ public final class Node {
         log.info("Initializing Node:{}", peerID);
 
         /* Initialize listener */
-        Listener listener = new Listener(nodeConfig);
-        listener.init();
+        Listener listener = new Listener();
+        listener.init(nodeConfig.getListenerPort());
         log.info("Initialized listener");
 
         /* Initialize queryClient */
-        QueryClient queryClient = new QueryClient(nodeConfig);
-        queryClient.init();
+        Client client = new Client();
+        Neighbour neighbour1 = nodeConfig.getNeighbours().get(0);
+        client.init(neighbour1.getIp(), neighbour1.getPort());
         log.info("Initialized queryClient");
     }
 

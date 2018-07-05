@@ -24,7 +24,7 @@ public final class CommonConfigHolder {
     }
 
     public void setConfigUsingResource(String peerName) throws FileUtilityException {
-        String resourcePath = SystemProperties.getProperty(Constants.CARBC_HOME)
+        String resourcePath = System.getProperty(Constants.CARBC_HOME)
                 +"/src/main/resources/" + peerName +".json";
         this.configJson = new JSONObject(FileUtils.readFileContentAsText(resourcePath));
     }

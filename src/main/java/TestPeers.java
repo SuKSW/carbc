@@ -10,13 +10,14 @@ public class TestPeers {
 
         //Set the main directory as home
         System.setProperty(Constants.CARBC_HOME, System.getProperty("user.dir"));
+        System.out.println(System.getProperty(Constants.CARBC_HOME));
 
-        //Done at the very beginning
+        //at the very beginning
         //A Config common to all: network, blockchain, etc.
         CommonConfigHolder commonConfigHolder = CommonConfigHolder.getInstance();
         commonConfigHolder.setConfigUsingResource("peer1");
 
-        //Done when initializing the network
+        //when initializing the network
         Node node = Node.getInstance();
         node.init();
     }
