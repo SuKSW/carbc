@@ -10,14 +10,17 @@ public class Block {
         this.transactions = transactions;
     }
 
+    public Block() {}
     //To do
-    public Block mineBlock(){
+    public Block createBlock(){
         return this;
     }
 
-    public Block createGenesis(){
-        Block genesisBlock = new Block(header,transactions); // should change
-        return this;
+    public static Block createGenesis(){
+
+         Block genesisBlock = new Block(); // should change
+
+        return genesisBlock;
     }
 
     private byte[] getTransactionsEncoded(){
