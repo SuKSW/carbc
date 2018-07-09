@@ -51,13 +51,15 @@ public final class Node {
         /* Initialize listener */
         Listener listener = new Listener();
         listener.init(nodeConfig.getListenerPort());
+        listener.start();
         log.info("Initialized listener");
 
         /* Initialize queryClient */
         Client client = new Client();
         Neighbour neighbour1 = nodeConfig.getNeighbours().get(0);
         client.init(neighbour1.getIp(), neighbour1.getPort());
-        log.info("Initialized queryClient");
+        client.start();
+        log.info("Initialized client");
     }
 
 }

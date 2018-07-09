@@ -9,11 +9,24 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import network.Listener.Handlers.CommonListenerHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Listener {
-    static int port;
+public class Listener extends Thread {
+    private final Logger log = LoggerFactory.getLogger(Listener.class);
+    private static int port;
 
-    public void run() throws Exception {
+    public static void init(int listenerPort){
+        port = listenerPort;
+        if (listenerPort > 0) {
+            port = listenerPort;
+        } else {
+            port = 8080;
+        }
+    }
+
+    @Override
+    public void run() {
         // accepts an incoming connection
         EventLoopGroup bossGroup = new NioEventLoopGroup();
 
@@ -30,31 +43,20 @@ public class Listener {
                             ch.pipeline().addLast(new CommonListenerHandler());
                         }
                     })
-                    .option(ChannelOption.SO_BACKLOG, 128)          // (5)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             // Bind and start to accept incoming connections.
-            ChannelFuture f = b.bind(port).sync(); // (7)
+            ChannelFuture f = b.bind(port).sync();
+            log.info("Listening on port: {}", port);
 
             // Wait until the server socket is closed and gracefully shut down your server.
             f.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
-        }
-    }
-
-    public static void init(int listenerPort){
-        port = listenerPort;
-        if (listenerPort > 0) {
-            port = listenerPort;
-        } else {
-            port = 8080;
-        }
-        try {
-            new Listener().run();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

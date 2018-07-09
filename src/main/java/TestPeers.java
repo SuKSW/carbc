@@ -6,11 +6,10 @@ import org.slf4j.impl.SimpleLogger;
 
 public class TestPeers {
     public static void main(String[] args) throws FileUtilityException {
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "INFO");
 
         //Set the main directory as home
         System.setProperty(Constants.CARBC_HOME, System.getProperty("user.dir"));
-        System.out.println(System.getProperty(Constants.CARBC_HOME));
 
         //at the very beginning
         //A Config common to all: network, blockchain, etc.
