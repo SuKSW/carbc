@@ -1,6 +1,9 @@
 package chainUtil;
 
+import core.blockchain.Block;
+
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,5 +36,27 @@ public class ChainUtil {
 //    public publicKeyEncryption() {
 //
 //    }
+
+    public static byte[] getHash(String data) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        return digest.digest(data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String bytesToHex(byte[] hash) {
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
+    public static String getBlockHash(Block block) {
+        //get details in the blockheader
+        //get details in the block
+        //concat both get hash and return
+        return "block";
+    }
 
 }
