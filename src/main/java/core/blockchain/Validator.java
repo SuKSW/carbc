@@ -1,28 +1,51 @@
 package core.blockchain;
 
+import java.security.PublicKey;
+
 public class Validator {
 
-    private String address;
+    private PublicKey validator;
     private boolean isMandotory;
+    private String role;
+    private int priority;
 
-    public Validator(String address, boolean isMandotory){
-        this.address = address;
-        this.isMandotory = false;
+    public Validator(PublicKey validator, String role, boolean isMandotory, int priority){
+        this.validator = validator;
+        this.role = role;
+        this.isMandotory = true;
+        this.priority = priority;
     }
 
-    public String getAddress() {
-        return address;
+    public PublicKey getValidator() {
+        return validator;
     }
 
     public boolean isMandotory() {
         return isMandotory;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public String getRole() {
+        return role;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+
+    public void setValidator(PublicKey validator) {
+        this.validator = validator;
     }
 
     public void setMandotory(boolean mandotory) {
         isMandotory = mandotory;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }
