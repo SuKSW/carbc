@@ -1,35 +1,52 @@
 package network.Listener.Handlers;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
+import network.Client.RequestMessage;
+import network.Protocol.AckMessageCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Map;
 
 public class CommonListenerHandler extends ChannelInboundHandlerAdapter {
     private final Logger log = LoggerFactory.getLogger(CommonListenerHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        log.info("channel active");
-        //Read the messages from the client
-        ByteBuf in = (ByteBuf) msg;
-        try {
-            while (in.isReadable()) {
-                System.out.print((char) in.readByte());
-                System.out.flush();
-            }
-        } finally {
-            ReferenceCountUtil.release(msg);
-        }
+        if(msg instanceof RequestMessage){
+            RequestMessage requestMessage = (RequestMessage) msg;
+            Map<String, String> headers = requestMessage.readHeaders();
+            String data = requestMessage.readData();
 
-        //Send a response msg back to the client
-        final ChannelFuture f = ctx.writeAndFlush("Got your request");
-        //finish the connection
-        f.addListener(ChannelFutureListener.CLOSE);
+            //-------------------------------------------
+            // call the workflow methods here after checking the headers
+            // can use switch-case and call the methods
+            //-----------------------------------------------
+
+            System.out.println("=====================================");
+            System.out.println("        at the server side           ");
+            System.out.println("=====================================");
+            System.out.println("----------headers----------------");
+            System.out.println(headers.toString());
+            System.out.println("----------data----------------");
+            System.out.println(data);
+
+            RequestMessage ackMessage = AckMessageCreator.createAckMessage("Block");
+            ackMessage.addHeader("keepActive", "false");
+            ChannelFuture f = ctx.writeAndFlush(ackMessage);
+
+            //if the msg we received had the header "keepActive" set to false
+            //then close the channel
+            if("false".equals(headers.get("keepActive"))) {
+                //finish the process
+                f.addListener(ChannelFutureListener.CLOSE);
+            }
+
+        }
     }
 
     @Override

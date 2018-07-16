@@ -3,6 +3,7 @@ package network;
 import config.CommonConfigHolder;
 import config.NodeConfig;
 import network.Client.Client;
+import network.Client.RequestMessage;
 import network.Listener.Listener;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,9 @@ import java.util.Random;
 public final class Node {
     private final Logger log = LoggerFactory.getLogger(Node.class);
     private static final Node instance = new Node();
+
+    Listener listener;
+    Client client;
 
     private NodeConfig nodeConfig;
 
@@ -48,16 +52,19 @@ public final class Node {
 
         log.info("Initializing Node:{}", peerID);
 
-        /* Initialize listener */
-        Listener listener = new Listener();
-        listener.init(nodeConfig.getListenerPort());
-        listener.start();
-        log.info("Initialized listener");
+    }
 
-        /* Initialize queryClient */
+    public void startListening() {
+        this.listener = new Listener();
+        this.listener.init(nodeConfig.getListenerPort());
+        this.listener.start();
+        log.info("Initialized listener");
+    }
+
+    public void sendMessageToNeighbour(int neighnourIndex, RequestMessage requestMessage) {
         Client client = new Client();
-        Neighbour neighbour1 = nodeConfig.getNeighbours().get(0);
-        client.init(neighbour1.getIp(), neighbour1.getPort());
+        Neighbour neighbour1 = nodeConfig.getNeighbours().get(neighnourIndex);
+        client.init(neighbour1, requestMessage);
         client.start();
         log.info("Initialized client");
     }

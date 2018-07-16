@@ -1,61 +1,53 @@
 package network.Client.Handlers;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import network.Client.RequestMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  *
  */
 public class CommonClientHandler extends ChannelInboundHandlerAdapter {
     private final Logger log = LoggerFactory.getLogger(CommonClientHandler.class);
-    private ByteBuf buf;
+    private RequestMessage requestMessage;
 
-    @Override
-    public void handlerAdded(ChannelHandlerContext ctx) {
-        buf = ctx.alloc().buffer(50); // capacity is at least 50 bytes
+    public CommonClientHandler(RequestMessage requestMessage) {
+        this.requestMessage = requestMessage;
     }
 
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) {
-        buf.release();
-        buf = null;
-    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        String msg = "send me something";
-        try {
-            byte[] b = msg.getBytes("UTF-8");
-            ChannelFuture f = ctx.writeAndFlush(b);
-            System.out.println(f.toString());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-
+        ChannelFuture f = ctx.writeAndFlush(this.requestMessage);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        log.info("channel read");
-        ByteBuf byteBuff = (ByteBuf) msg;
-        buf.writeBytes(byteBuff);
-        byteBuff.release();
+        if(msg instanceof RequestMessage) {
+            RequestMessage requestMessage = (RequestMessage) msg;
+            Map<String, String> headers = requestMessage.readHeaders();
+            String data = requestMessage.readData();
 
-        //if (buf.readableBytes() >= 16) { // check whether at least 16 bytes have arrived
-            while (byteBuff.isReadable()) {
-                System.out.print(byteBuff.readByte());
-            }
             System.out.println();
-        //}
-        ctx.close();
+            System.out.println("=====================================");
+            System.out.println("        at the client side           ");
+            System.out.println("=====================================");
+            System.out.println("----------headers----------------");
+            System.out.println(headers.toString());
+            System.out.println("----------data----------------");
+            System.out.println(data);
+
+            //if the msg we received had the header "keepActive" set to false
+            //then close the channel
+            if ("false".equals(headers.get("keepActive"))) {
+                //finish the process
+                ctx.close();
+            }
+        }
     }
 
     @Override
