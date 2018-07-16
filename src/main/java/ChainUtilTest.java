@@ -21,7 +21,10 @@ public class ChainUtilTest {
             e.getMessage();
         }
 
+<<<<<<< HEAD
         //generateAgreementCollectorId
 
+=======
+>>>>>>> consensus and agreement collector classes
     }
 }
