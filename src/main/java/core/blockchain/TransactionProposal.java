@@ -1,70 +1,116 @@
 package core.blockchain;
 
+import java.security.PublicKey;
+
 public class TransactionProposal {
-    private String senderAddress;
+    private PublicKey sender;
     private Validator[] validators;
-    private String data;
-    private int signCount;
-    private boolean isValid;
+    private byte[] data;
+    private String proposalID;
+    private String timestamp;
+    private TransactionInfo transactionInfo;
+    private Validation validation;
 
-    // should set sign count to zero
 
-    public TransactionProposal(String senderAddress, Validator[] validators, String data, int signCount, boolean isValid) {
-        this.senderAddress = senderAddress;
+    public TransactionProposal(PublicKey sender, Validator[] validators, byte[] data, String proposalID, String timestamp, TransactionInfo transactionInfo, Validation validation) {
+        this.sender = sender;
         this.validators = validators;
         this.data = data;
-        this.signCount = signCount;
-        this.isValid = false;
+        this.proposalID = proposalID;
+        this.timestamp = timestamp;
+        this.transactionInfo = transactionInfo;
+        this.validation = validation;
     }
 
-    public String getSenderAddress() {
-        return senderAddress;
+
+    public PublicKey getSender() {
+        return sender;
     }
 
-    public Validator[] getvalidators() {
+    public Validator[] getValidators() {
         return validators;
     }
 
-    public String getData() {
+    public byte[] getData() {
         return data;
     }
 
-    public void setSenderAddress(String senderAddress) {
-        this.senderAddress = senderAddress;
+    public String getProposalID() {
+        return proposalID;
     }
 
-    public void setvalidators(Validator[] validators) {
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public TransactionInfo getTransactionInfo() {
+        return transactionInfo;
+    }
+
+    public void setProposalID(String proposalID) {
+        this.proposalID = proposalID;
+    }
+
+    public Validation getValidation() {
+        return validation;
+    }
+
+    public void setSender(PublicKey sender) {
+        this.sender = sender;
+    }
+
+    public void setValidators(Validator[] validators) {
         this.validators = validators;
     }
 
-    public void setData(String data) {
+    public void setData(byte[] data) {
         this.data = data;
     }
 
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setTransactionInfo(TransactionInfo transactionInfo) {
+        this.transactionInfo = transactionInfo;
+    }
+
+    public void setValidation(Validation validation) {
+        this.validation = validation;
+    }
+
+
     //To do
-    public TransactionProposal createTransactionProposal(String senderAddress, Validator[] validators, String data, int signCount){
-        TransactionProposal proposal = new TransactionProposal(senderAddress,validators,data,signCount,false);
+    public TransactionProposal createTransactionProposal(){
+
         return this;
     }
 
     
-    public void sendTransactionProposal(TransactionProposal proposal){
+    public boolean sendProposal(TransactionProposal proposal){
         for (Validator validator: proposal.validators){
-            String validatorAddress = validator.getAddress();
-            // create socket connection and send proposal
+            PublicKey validatorPublicKey = validator.getValidator();
+            // create socket connection and send proposal and return true
         }
+        return false;
     }
 
-    public void signTransactionProposal(TransactionProposal proposal){
-
-    }
-
-    public void sendBack(TransactionProposal proposal){
-        if (proposal.isValid) {
-
-            String senderAddress = proposal.senderAddress;
-            // create socket connection and send back
+    public TransactionResponse signProposal(TransactionProposal proposal){
+        if (isValid(proposal)) {
+            byte[] signature = ChainUtil.sign();//signature of the proposal
+            proposal.getValidators();
+            //Validator validator = new Validator(ChainUtil.getPublicKey(),);
+            //TransactionResponse response = new TransactionResponse(proposal.getProposalID(), , signature);
+            //return response;
         }
+       return null;
     }
+
+
+    public boolean isValid(TransactionProposal proposal){
+
+        return false;
+    }
+
 
 }

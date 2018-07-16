@@ -1,18 +1,29 @@
 package core.blockchain;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class TransactionPool {
 
-    private Stack transactionPool;
+    private static ArrayList<Transaction> transactionPool;
 
+    public TransactionPool() {
+        transactionPool = new ArrayList<Transaction>();
+    }
+
+    public static ArrayList<Transaction> getTransactionPool() {
+        return transactionPool;
+    }
 
     //To do
 
     public void addToPool(Transaction transaction){
-        this.transactionPool.push(transaction);
-        return;
-
+        if(transaction.isValid(transaction)) {
+            this.transactionPool.add(transaction);
+            return;
+        }else {
+            return;
+        }
     }
 
     public void sendPool(){

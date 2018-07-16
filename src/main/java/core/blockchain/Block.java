@@ -10,7 +10,24 @@ public class Block {
         this.transactions = transactions;
     }
 
-    public Block() {}
+    public BlockHeader getHeader() {
+        return header;
+    }
+
+    public Transaction[] getTransactions() {
+        return transactions;
+    }
+
+
+    public void setHeader(BlockHeader header) {
+        this.header = header;
+    }
+
+    public void setTransactions(Transaction[] transactions) {
+        this.transactions = transactions;
+    }
+
+    public Block() {} //remove
     //To do
     public Block createBlock(){
         return this;
@@ -18,13 +35,21 @@ public class Block {
 
     public static Block createGenesis(){
 
-         Block genesisBlock = new Block(); // should change
+      //  BlockHeader genesisHeader = new BlockHeader("1",null,null,null,"",0,"",1,true);
 
-        return genesisBlock;
+      //  Block genesisBlock = new Block(genesisHeader,new Transaction[0]); // should change
+
+      //  return genesisBlock;
+
+        return null;
     }
 
     private byte[] getTransactionsEncoded(){
         return  null;
+    }
+
+    public void broadcast(Block block){
+
     }
 
 }
