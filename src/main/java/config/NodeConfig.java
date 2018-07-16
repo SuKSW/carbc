@@ -7,7 +7,7 @@ import java.util.List;
 
 public class NodeConfig {
     private final Long peerID;
-    private int listenerPort;
+    private int ListenerPort;
     private List<Neighbour> neighbours;
 
 
@@ -20,18 +20,17 @@ public class NodeConfig {
         return peerID;
     }
 
-    public final void setListenerPort(int listenerPort) {
-        this.listenerPort = listenerPort;
+    public final void setListenerPort(int ListenerPort) {
+        this.ListenerPort = ListenerPort;
     }
 
     public int getListenerPort() {
-        return listenerPort;
+        return ListenerPort;
     }
 
     public void addNeighbour(Neighbour neighbour) {
         this.neighbours.add(neighbour);
     }
-
 
     public List<Neighbour> getNeighbours() {
         return neighbours;
