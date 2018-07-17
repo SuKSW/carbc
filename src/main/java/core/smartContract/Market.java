@@ -24,7 +24,6 @@ public class Market implements java.io.Serializable{
         this.contractPublicKey = contract.getContractPublicKey();
 
 
-
     }
 
     private class Vehicle{
