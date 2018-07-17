@@ -20,5 +20,7 @@ public class ChainUtilTest {
         } catch (Exception e) {
             e.getMessage();
         }
+
+        //generateAgreementCollectorId
     }
 }
