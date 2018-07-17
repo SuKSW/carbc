@@ -21,5 +21,7 @@ public class ChainUtilTest {
             e.getMessage();
         }
 
+        //generateAgreementCollectorId
+
     }
 }

@@ -7,14 +7,12 @@ import java.util.ArrayList;
 
 public class AgreementCollector {
 
-
     String id;
     Block block;
     ArrayList<PublicKey> agreedNodes;
 
     public AgreementCollector(Block block) {
-//        id = ChainUtil.bytesToHex(ChainUtil.getHash(block))
-        getAgreedNodes();
+        id = generateAgreementCollectorId(block);
         this.block = block;
         agreedNodes = new ArrayList<>();
     }
@@ -36,12 +34,11 @@ public class AgreementCollector {
         return agreedNodes;
     }
 
-//    public byte[] getBlockHash() {
-//
-//    }
-
     public static String generateAgreementCollectorId(Block block) {
-//        return ChainUtil.getBlockHash(block)+ block.getBlockNumber();
-        return "hash1234";
+        return ChainUtil.getBlockHash(block)+ block.getHeader().getBlockNumber();
+    }
+
+    public String getId() {
+        return id;
     }
 }
