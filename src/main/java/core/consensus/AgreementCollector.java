@@ -45,5 +45,4 @@ public class AgreementCollector {
     public int getAgreedNodesCount() {
         return agreedNodes.size();
     }
-
 }
