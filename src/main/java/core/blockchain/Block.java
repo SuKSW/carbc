@@ -3,9 +3,9 @@ package core.blockchain;
 public class Block {
 
     private BlockHeader header;
-    private Transaction[] transactions;
+    private Transaction transactions;
 
-    public Block(BlockHeader header, Transaction[] transactions) {
+    public Block(BlockHeader header, Transaction transactions) {
         this.header = header;
         this.transactions = transactions;
     }
@@ -14,7 +14,7 @@ public class Block {
         return header;
     }
 
-    public Transaction[] getTransactions() {
+    public Transaction getTransaction() {
         return transactions;
     }
 
@@ -23,7 +23,7 @@ public class Block {
         this.header = header;
     }
 
-    public void setTransactions(Transaction[] transactions) {
+    public void setTransaction(Transaction transactions) {
         this.transactions = transactions;
     }
 
@@ -49,6 +49,9 @@ public class Block {
     }
 
     public void broadcast(Block block){
+
+    }
+    public void sendBlockToValidators(Block block){
 
     }
 

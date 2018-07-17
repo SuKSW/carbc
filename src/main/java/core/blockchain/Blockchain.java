@@ -3,7 +3,7 @@ package core.blockchain;
 import java.util.LinkedList;
 
 public class Blockchain {
-    private static LinkedList<Block> blockchainArray;
+    private  LinkedList<Block> blockchainArray;
     private static Blockchain blockchain;
 
     private Blockchain() {
@@ -12,10 +12,13 @@ public class Blockchain {
     }
 
     public static Blockchain getBlockchain() {
+        if (blockchain == null){
+            blockchain = new Blockchain();
+        }
         return blockchain;
     }
 
-    public static LinkedList<Block> getBlockchainArray() {
+    public  LinkedList<Block> getBlockchainArray() {
         return blockchainArray;
     }
 
@@ -23,15 +26,21 @@ public class Blockchain {
         this.blockchainArray.add(block);
     }
 
-    public static void rollBack(long blockNumber){
+
+    public  void rollBack(long blockNumber){
         LinkedList<Block> validBlockchain = new LinkedList<Block>();
-        validBlockchain = (LinkedList<Block>) blockchainArray.subList(0, (int) blockNumber);
-        blockchainArray = validBlockchain;
+        if (blockchainArray.size()>(int)blockNumber){
+            validBlockchain = (LinkedList<Block>) blockchainArray.subList(0, (int) blockNumber);
+            blockchainArray = validBlockchain;
+        }
     }
+
 
     public Block getBlockByNumber(long blockNumber){
-        Block block = blockchainArray.get((int) blockNumber);
-        return block;
+        if (blockchainArray.size()>(int)blockNumber){
+            Block block = blockchainArray.get((int) blockNumber);
+            return block;
+        }
+        return null;
     }
-
 }
