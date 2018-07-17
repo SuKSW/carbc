@@ -5,6 +5,7 @@ import chainUtil.KeyGenerator;
 
 import java.io.IOException;
 import java.security.*;
+import java.sql.Timestamp;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Scanner;
 
@@ -127,6 +128,8 @@ public class TransactionProposal {
         if (response!=null){
             //create connection and send response to sender
             return  true;
+        }else {
+
         }
         return  false;
     }
@@ -142,7 +145,7 @@ public class TransactionProposal {
             System.out.println("sending response");
         }
         else if (isValid.equalsIgnoreCase("no")){
-            
+
         }else {
             System.out.println("please enter yes or no");
         }

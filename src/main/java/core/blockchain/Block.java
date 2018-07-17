@@ -48,11 +48,12 @@ public class Block {
         return  null;
     }
 
-    public void broadcast(Block block){
+    public void broadcast(){
 
     }
-    public void sendBlockToValidators(Block block){
+    public boolean sendBlockToValidator(Validator validator){
 
+        return false;
     }
 
 }
