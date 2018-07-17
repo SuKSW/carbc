@@ -3,8 +3,10 @@ package core.consensus;
 import core.blockchain.Block;
 import core.blockchain.Blockchain;
 import core.blockchain.Transaction;
+import core.blockchain.Validation;
+
 import java.security.PublicKey;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Consensus {
@@ -18,16 +20,23 @@ public class Consensus {
     }
 
     public boolean agreedTransaction(Transaction transaction) {
-        if(!agreedTransactiions.contains(transaction)) {
+        if (!agreedTransactiions.contains(transaction)) {
             agreedTransactiions.add(transaction);
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
     public boolean requestAgreementForBlock(Block block) {
-        //broadcast block to every peer requesting agreement
+        ArrayList<PublicKey> validators = new ArrayList<>();
+        Validation[] validations = block.getTransactions()[0].getValidations();
+
+        for(Validation validation: validations) {
+            validators.add(validation.getValidator().getValidator());
+        }
+
+        //send the block to validators in the validators array for agreements
         return true;
     }
 
@@ -35,43 +44,43 @@ public class Consensus {
         return true;
     }
 
-    public boolean checkAgreement(Block block) {
-//        if(agreedTransactiions.contains(block.getTransaction())){
-//            return true;
-//        }
+    public boolean checkAgreementForBlock (Block block) {
+        if(agreedTransactiions.contains(block.getTransactions()[0])){
+            return true;
+        }
         return false;
     }
 
-    public boolean addAgreedNode(Block block, PublicKey agreedNode) {
-       return getAgreementCollectorByBlock(block).addAgreedNode(agreedNode);
+    public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) {
+        //when agreed node add to the array we need to check whether k number of agreement received
+        return getAgreementCollectorByBlock(block).addAgreedNode(agreedNode);
     }
 
     public AgreementCollector getAgreementCollectorByBlock(Block block) {
-        //logic to get AgreementCollector by a Block
-
-        return new AgreementCollector(block);
-    }
-
-    public boolean RollBack(long blockNumber) {
-        //remove all the blocks from given blocknumber
-        return true;
+        String id = AgreementCollector.generateAgreementCollectorId(block);
+        for(int i = 0; i< agreementCollectors.size(); i++) {
+            if(agreementCollectors.get(i).getId() == id) {
+                return agreementCollectors.get(i);
+            }
+        }
+        return null;
     }
 
 //    public boolean insertBlock(Block block) {
-//        long receivedBlockNumber = block.getBlockNumber();
-//        Timestamp receivedBlockTimestamp = block.getTimeStamp();
+//        long receivedBlockNumber = block.getHeader().getBlockNumber();
+//        Timestamp receivedBlockTimestamp = block.getHeader().getTimestamp();
 //
-//        if(!blockExistence(block)) {
+//        if (!blockExistence(block)) {
 //            Blockchain.addBlock(block);
 //            return true;
-//        }else {
-//            Block existBlock = Blockchain.getBlockbyBlockNumber(receivedBlockNumber);
+//        } else {
+//            Block existBlock = Blockchain.getBlockByNumber(receivedBlockNumber);
 //
-//            if(existBlock.getTimeStamp > receivedBlockTimestamp) {
+//            if (existBlock.getHeader().getTimestamp().after(receivedBlockTimestamp)) {
 //                Blockchain.rollBack(receivedBlockNumber);
 //                Blockchain.addBlock(block);
 //                return true;
-//            }else if(existBlock.getTimeStamp == receivedBlockTimestamp) {
+//            } else if (existBlock.getHeader().getTimestamp() == receivedBlockTimestamp) {
 //                Blockchain.rollBack(receivedBlockNumber);
 //                return false;
 //            }
@@ -80,12 +89,11 @@ public class Consensus {
 //    }
 
     public boolean blockExistence(Block block) {
-//        long blockNumber = block.getNumber();
-        //if blockchain length is longer than blockNumber
-        //return true, otherwise false
-        return true;
+        if(Blockchain.getBlockchainArray().size() > block.getHeader().getBlockNumber()) {
+            return true;
+        }
+        return false;
     }
-
 
 
 }
