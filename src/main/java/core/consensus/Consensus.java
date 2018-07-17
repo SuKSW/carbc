@@ -30,7 +30,6 @@ public class Consensus {
     public boolean requestAgreementForBlock(Block block) {
         ArrayList<PublicKey> validators = new ArrayList<>();
         Validation[] validations = block.getTransaction().getValidations();
-
         for(Validation validation: validations) {
             validators.add(validation.getValidator().getValidator());
         }
@@ -91,6 +90,28 @@ public class Consensus {
         }
     }
 
+//    public boolean insertBlock(Block block) {
+//        long receivedBlockNumber = block.getHeader().getBlockNumber();
+//        Timestamp receivedBlockTimestamp = block.getHeader().getTimestamp();
+//
+//        if (!blockExistence(block)) {
+//            Blockchain.addBlock(block);
+//            return true;
+//        } else {
+//            Block existBlock = Blockchain.getBlockByNumber(receivedBlockNumber);
+//
+//            if (existBlock.getHeader().getTimestamp().after(receivedBlockTimestamp)) {
+//                Blockchain.rollBack(receivedBlockNumber);
+//                Blockchain.addBlock(block);
+//                return true;
+//            } else if (existBlock.getHeader().getTimestamp() == receivedBlockTimestamp) {
+//                Blockchain.rollBack(receivedBlockNumber);
+//                return false;
+//            }
+//            return false;
+//        }
+//    }
+
     public boolean blockExistence(Block block) {
         if(Blockchain.getBlockchain().getBlockchainArray().size() > block.getHeader().getBlockNumber()) {
             return true;
@@ -115,6 +136,6 @@ public class Consensus {
             System.out.println("Agreements received upto threshold level");
             insertBlock(block);
         }
-
     }
+
 }

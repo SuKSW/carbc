@@ -41,8 +41,11 @@ public class AgreementCollector {
     public String getId() {
         return id;
     }
+<<<<<<< HEAD
 
     public int getAgreedNodesCount() {
         return agreedNodes.size();
     }
+=======
+>>>>>>> e46f79e0e101e0c61ec2d7a8f5125ad2ba804956
 }
