@@ -8,19 +8,17 @@ public class Transaction {
     private Validation[] validations;
     private byte[] data;
     private String transactionID;
-    private String timestamp;
     private TransactionInfo transactionInfo; //sell, insure, repair, register & etc
 
 
     // timestamp should assign current time
 
 
-    public Transaction(PublicKey sender, Validation[] validations, byte[] data, String transactionID, String timestamp, TransactionInfo transactionInfo) {
+    public Transaction(PublicKey sender, Validation[] validations, byte[] data, String transactionID, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validations = validations;
         this.data = data;
         this.transactionID = transactionID;
-        this.timestamp = timestamp;
         this.transactionInfo = transactionInfo;
     }
 
@@ -41,9 +39,6 @@ public class Transaction {
         return transactionID;
     }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
 
     public TransactionInfo getTransactionInfo() {
         return transactionInfo;
@@ -64,10 +59,6 @@ public class Transaction {
 
     public void setTransactionID(String transactionID) {
         this.transactionID = transactionID;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 
     public void setTransactionInfo(TransactionInfo transactionInfo) {

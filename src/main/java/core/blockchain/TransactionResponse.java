@@ -1,6 +1,8 @@
 package core.blockchain;
 
-import java.security.PublicKey;
+import java.io.IOException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 
 public class TransactionResponse {
     private String ProposalID;
@@ -41,13 +43,4 @@ public class TransactionResponse {
     }
 
 
-    public boolean sendResponse(TransactionProposal proposal){
-        PublicKey sender = proposal.getSender();
-        TransactionResponse response =  proposal.signProposal(proposal);
-        if (response!=null){
-            //create connection and send response to sender
-            return  true;
-        }
-        return  false;
-    }
 }
