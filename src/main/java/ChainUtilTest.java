@@ -20,11 +20,6 @@ public class ChainUtilTest {
         } catch (Exception e) {
             e.getMessage();
         }
-
-<<<<<<< HEAD
-        //generateAgreementCollectorId
-
-=======
->>>>>>> consensus and agreement collector classes
+        
     }
 }
