@@ -1,8 +1,7 @@
 package core.blockchain;
 
-<<<<<<< HEAD
 import java.security.PublicKey;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 public class BlockHeader {
     private String version;

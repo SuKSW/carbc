@@ -2,7 +2,7 @@ package config;
 
 
 import Exceptions.FileUtilityException;
-import com.sun.javafx.runtime.SystemProperties;
+//import com.sun.javafx.runtime.SystemProperties;
 import constants.Constants;
 import org.json.JSONObject;
 import utils.FileUtils;

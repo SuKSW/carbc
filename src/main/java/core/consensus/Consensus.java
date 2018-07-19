@@ -30,7 +30,8 @@ public class Consensus {
 
     public boolean requestAgreementForBlock(Block block) {
         ArrayList<PublicKey> validators = new ArrayList<>();
-        Validation[] validations = block.getTransactions()[0].getValidations();
+       // Validation[] validations = block.getTransaction().getValidations(); //changed
+        ArrayList<Validation> validations = block.getTransaction().getValidations();
 
         for(Validation validation: validations) {
             validators.add(validation.getValidator().getValidator());
@@ -45,7 +46,7 @@ public class Consensus {
     }
 
     public boolean checkAgreementForBlock (Block block) {
-        if(agreedTransactiions.contains(block.getTransactions()[0])){
+        if(agreedTransactiions.contains(block.getTransaction())){ //changed
             return true;
         }
         return false;

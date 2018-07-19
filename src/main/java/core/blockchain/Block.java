@@ -1,5 +1,8 @@
 package core.blockchain;
 
+import java.security.PublicKey;
+import java.sql.Timestamp;
+
 public class Block {
 
     private BlockHeader header;
@@ -9,6 +12,22 @@ public class Block {
         this.header = header;
         this.transactions = transactions;
     }
+
+//       private String version;
+//    private byte[] previoushash;
+//    private byte[] hash;
+//    private Timestamp timestamp;
+//    //private int txCount;
+//    private PublicKey signer;
+//    private long blockNumber;
+//    private boolean isApproved;
+    public Block(String version, byte[] previousHash, byte[] hash, Timestamp timestamp, PublicKey signer, long blockNumber, boolean isAprrroved, Transaction transaction){
+        BlockHeader blockHeader = new BlockHeader(version,previousHash,hash,timestamp,signer,blockNumber,false);
+        new Block(blockHeader,transaction);
+    }
+
+
+
 
     public BlockHeader getHeader() {
         return header;
@@ -27,7 +46,7 @@ public class Block {
         this.transactions = transactions;
     }
 
-    public Block() {} //remove
+
     //To do
     public Block createBlock(){
         return this;
@@ -35,24 +54,15 @@ public class Block {
 
     public static Block createGenesis(){
 
-      //  BlockHeader genesisHeader = new BlockHeader("1",null,null,null,"",0,"",1,true);
-
-      //  Block genesisBlock = new Block(genesisHeader,new Transaction[0]); // should change
-
-      //  return genesisBlock;
-
         return null;
-    }
-
-    private byte[] getTransactionsEncoded(){
-        return  null;
     }
 
     public void broadcast(){
 
     }
     public boolean sendBlockToValidator(Validator validator){
-
+        PublicKey publicKey = validator.getValidator();
+        //send block to validator
         return false;
     }
 

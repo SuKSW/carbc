@@ -3,7 +3,7 @@ package core.blockchain;
 import java.util.LinkedList;
 
 public class Blockchain {
-    private  LinkedList<Block> blockchainArray;
+    private static LinkedList<Block> blockchainArray;
     private static Blockchain blockchain;
 
     private Blockchain() {
@@ -18,7 +18,7 @@ public class Blockchain {
         return blockchain;
     }
 
-    public  LinkedList<Block> getBlockchainArray() {
+    public static LinkedList<Block> getBlockchainArray() {
         return blockchainArray;
     }
 
@@ -32,6 +32,7 @@ public class Blockchain {
         if (blockchainArray.size()>(int)blockNumber){
             validBlockchain = (LinkedList<Block>) blockchainArray.subList(0, (int) blockNumber);
             blockchainArray = validBlockchain;
+            //should save invalid blocks in some whare else
         }
     }
 

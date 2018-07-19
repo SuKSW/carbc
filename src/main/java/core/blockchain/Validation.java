@@ -1,5 +1,7 @@
 package core.blockchain;
 
+import chainUtil.ChainUtil;
+
 import java.security.PublicKey;
 
 public class Validation {
@@ -30,5 +32,10 @@ public class Validation {
         this.signature = signature;
     }
 
+    @Override
+    public String toString(){
+
+        return "'Validator:'" + this.validator.toString() + "'Signature:'" + ChainUtil.bytesToHex(this.signature);
+    }
 
 }
