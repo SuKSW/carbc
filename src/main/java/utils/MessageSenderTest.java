@@ -11,6 +11,7 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class MessageSenderTest {
 
@@ -24,13 +25,15 @@ public class MessageSenderTest {
             byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
             byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
             PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
-            Validator validator1 = new Validator(publicKey,"owner",true,3);
-            Validator validator2 = new Validator(publicKey,"seller",true,4);
-            Validation[] validations = {new Validation(validator1,signatue1), new Validation(validator2,signatue2)};
-
-            BlockHeader blockHeader = new BlockHeader("101",prevhash,hash,timestamp,
-                    KeyGenerator.getInstance().getPublicKey(),123,true);
-            Transaction transaction = new Transaction(publicKey,validations,data,"tran1",new TransactionInfo());
+            Validator validator1 = new Validator("val1pubkey","owner",true,3);
+            Validator validator2 = new Validator("val2pubkey","seller",true,4);
+            ArrayList<Validation> validations = new ArrayList<>();
+            validations.add(new Validation(validator1,"3332"));
+            validations.add(new Validation(validator2,"3442"));
+            BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
+                    "senderPubkey",123,true);
+            Transaction transaction = new Transaction("senderpubkey",validations,"1456",
+                    "tran1",new TransactionInfo());
 
             Block block = new Block(blockHeader,transaction);
             JSONObject jsonObject = new JSONObject(block);

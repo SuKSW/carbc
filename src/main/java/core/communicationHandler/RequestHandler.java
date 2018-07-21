@@ -1,8 +1,17 @@
 package core.communicationHandler;
 
-import core.blockchain.Block;
+import chainUtil.ChainUtil;
+import chainUtil.KeyGenerator;
+import core.blockchain.*;
 import core.consensus.Consensus;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class RequestHandler {
@@ -18,7 +27,7 @@ public class RequestHandler {
         return requestHandler;
     }
 
-    public void handleRequest(Map headers, String data) {
+    public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
         System.out.println("********requestHandler*******");
         String messageType = (String)headers.get("messageType");
         System.out.println(messageType);
@@ -54,7 +63,8 @@ public class RequestHandler {
         System.out.println("handleTransactionProposalResponse");
     }
 
-    public void handleAgreementRequest(String data) {
+    public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+        Block requestAgreementBlock = JSONStringToBlock(data);
 
         System.out.println("handleAgreementRequest");
 
@@ -71,8 +81,26 @@ public class RequestHandler {
 
     }
 
-    public Block JSONStringToBlock(String JSONblock) {
-        return new Block();
+    public Block JSONStringToBlock(String JSONblock) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
+        byte[] prevhash = ChainUtil.hexStringToByteArray("1234");
+        byte[] hash = ChainUtil.hexStringToByteArray("5678");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        byte[] data = ChainUtil.hexStringToByteArray("1456");
+        byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
+        byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
+        PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
+        Validator validator1 = new Validator("val1pubkey","owner",true,3);
+        Validator validator2 = new Validator("val2pubkey","seller",true,4);
+        ArrayList<Validation> validations = new ArrayList<>();
+        validations.add(new Validation(validator1,"3332"));
+        validations.add(new Validation(validator2,"3442"));
+        BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
+                "senderPubkey",123,true);
+        Transaction transaction = new Transaction("senderpubkey",validations,"1456",
+                "tran1",new TransactionInfo());
+
+        Block block = new Block(blockHeader,transaction);
+        return block;
     }
 
 

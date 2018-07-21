@@ -113,4 +113,9 @@ public class KeyGenerator {
         return ChainUtil.bytesToHex(x509EncodedKeySpec.getEncoded());
     }
 
+    public String getPublicKeyAsString() throws NoSuchAlgorithmException, NoSuchProviderException, IOException, InvalidKeySpecException {
+        return getEncodedPublicKeyString(getPublicKey());
+
+    }
+
 }
