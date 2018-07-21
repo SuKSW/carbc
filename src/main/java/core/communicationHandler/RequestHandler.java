@@ -92,11 +92,11 @@ public class RequestHandler {
         Validator validator1 = new Validator("val1pubkey","owner",true,3);
         Validator validator2 = new Validator("val2pubkey","seller",true,4);
         ArrayList<Validation> validations = new ArrayList<>();
-        validations.add(new Validation(validator1,signatue1));
-        validations.add(new Validation(validator2,signatue2));
-        BlockHeader blockHeader = new BlockHeader("101",prevhash,hash,timestamp,
+        validations.add(new Validation(validator1,"3332"));
+        validations.add(new Validation(validator2,"3442"));
+        BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
                 "senderPubkey",123,true);
-        Transaction transaction = new Transaction("senderpubkey",validations,data,
+        Transaction transaction = new Transaction("senderpubkey",validations,"1456",
                 "tran1",new TransactionInfo());
 
         Block block = new Block(blockHeader,transaction);
