@@ -1,12 +1,14 @@
 package core.smartContract;
 
 import core.blockchain.*;
+import core.connection.SmartContractJDBCDAO;
+import core.connection.VehicleHistory;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException, NoSuchProviderException, InvalidKeySpecException, InterruptedException {
@@ -25,8 +27,14 @@ public class Main {
 //
 //        byte[] key = pub.getEncoded();
 
-        TransactionDummy tr = new TransactionDummy();
-        tr.executeSmartContractMethod();
+//        TransactionDummy tr = new TransactionDummy();
+//        tr.executeSmartContractMethod();
+
+        SmartContractJDBCDAO smartContractJDBCDAO = new SmartContractJDBCDAO();
+        VehicleHistory vehicleHistory = new VehicleHistory("a","a","a","a","a","a","a","a");
+
+        smartContractJDBCDAO.add(vehicleHistory);
+
 
     }
 
@@ -36,22 +44,33 @@ public class Main {
         long blockNumber = blockHeader.getBlockNumber();
 
         Transaction transaction = block.getTransaction();
-        PublicKey sender = transaction.getSender();
-        Validation[] validation = transaction.getValidations();
+
+        String sender = transaction.getSender();
+        ArrayList<Validation> validation = transaction.getValidations();
         byte[] data = transaction.getData();
         String transactionID = transaction.getTransactionID();
         TransactionInfo transactionInfo = transaction.getTransactionInfo();
 
-//        int smartContractId = transactionInfo.getSmartContractId;
-//        byte[] smartContractSignature = transactionInfo.getSmartContractSignature();
-//        String smartContractMethod = transactionInfo.getSmartContractMethod();
-//        String[] parameters = transactionInfo.getParameters();
+//        String smartContractId = transactionInfo.getSmartContractId();
+        String smartContractSignature = transactionInfo.getSmartContractSignature();
+        String smartContractMethod = transactionInfo.getSmartContractMethod();
+        String[] parameters = transactionInfo.getParameters();
+
+        int noOfValidators = validation.size();
+
+        String validationArray[][] = new String[1][noOfValidators];
+        for (int i=0; i<noOfValidators; i++){
+            Validation validations = validation.get(i);
+            validationArray[0][1] = validations.getValidator().getValidator();
+            validationArray[0][2] = validations.getSignature().toString();
+        }
 
 
-        int smartContractId;
-        byte[] smartContractSignature;
-        String smartContractMethod;
-        String[] parameters;
+//
+//        int smartContractId;
+//        byte[] smartContractSignature;
+//        String smartContractMethod;
+//        String[] parameters;
 
 
 

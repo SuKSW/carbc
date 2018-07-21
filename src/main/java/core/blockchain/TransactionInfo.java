@@ -2,20 +2,20 @@ package core.blockchain;
 
 public class TransactionInfo {
     private int threshod;
-    private int smartContractId;
-    private byte[] smartContractSignature;
+    private String smartContractId;
+    private String smartContractSignature;
     private String smartContractMethod;
-    private String parameters;
+    private String[] parameters;
 
     public int getThreshod() {
         return threshod;
     }
 
-    public int getSmartContractId() {
+    public String getSmartContractId() {
         return smartContractId;
     }
 
-    public byte[] getSmartContractSignature() {
+    public String getSmartContractSignature() {
         return smartContractSignature;
     }
 
@@ -23,7 +23,7 @@ public class TransactionInfo {
         return smartContractMethod;
     }
 
-    public String getParameters() {
+    public String[] getParameters() {
         return parameters;
     }
 
@@ -31,11 +31,11 @@ public class TransactionInfo {
         this.threshod = threshod;
     }
 
-    public void setSmartContractId(int smartContractId) {
+    public void setSmartContractId(String smartContractId) {
         this.smartContractId = smartContractId;
     }
 
-    public void setSmartContractSignature(byte[] smartContractSignature) {
+    public void setSmartContractSignature(String smartContractSignature) {
         this.smartContractSignature = smartContractSignature;
     }
 
@@ -43,7 +43,7 @@ public class TransactionInfo {
         this.smartContractMethod = smartContractMethod;
     }
 
-    public void setParameters(String parameters) {
+    public void setParameters(String[] parameters) {
         this.parameters = parameters;
     }
 
