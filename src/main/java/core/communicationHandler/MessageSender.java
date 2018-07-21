@@ -5,7 +5,6 @@ import core.blockchain.Block;
 import core.blockchain.BlockHeader;
 import core.blockchain.Transaction;
 import core.blockchain.TransactionProposal;
-import netscape.javascript.JSObject;
 import network.Client.RequestMessage;
 import network.Node;
 import network.Protocol.BlockMessageCreator;
