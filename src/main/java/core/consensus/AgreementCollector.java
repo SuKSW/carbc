@@ -2,6 +2,8 @@ package core.consensus;
 
 import chainUtil.ChainUtil;
 import core.blockchain.Block;
+
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
@@ -11,7 +13,7 @@ public class AgreementCollector {
     Block block;
     ArrayList<PublicKey> agreedNodes;
 
-    public AgreementCollector(Block block) {
+    public AgreementCollector(Block block) throws NoSuchAlgorithmException {
         id = generateAgreementCollectorId(block);
         this.block = block;
         agreedNodes = new ArrayList<>();
@@ -34,8 +36,8 @@ public class AgreementCollector {
         return agreedNodes;
     }
 
-    public static String generateAgreementCollectorId(Block block) {
-        return ChainUtil.getBlockHash(block)+ block.getHeader().getBlockNumber();
+    public static String generateAgreementCollectorId(Block block) throws NoSuchAlgorithmException {
+        return ChainUtil.getBlockHashString(block)+ block.getHeader().getBlockNumber();
     }
 
     public String getId() {
