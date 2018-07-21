@@ -9,10 +9,21 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class KeyGenerator {
 
+    private static KeyGenerator keyGenerator;
+
+    public KeyGenerator(){};
+
+    public static KeyGenerator getInstance(){
+        if(keyGenerator == null) {
+            keyGenerator = new KeyGenerator();
+        }
+        return keyGenerator;
+    }
+
     private boolean generateKeyPair() throws NoSuchProviderException, NoSuchAlgorithmException, IOException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA", "SUN");
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
-        keyGen.initialize(1024, random);
+        keyGen.initialize(512, random);
         KeyPair pair = keyGen.generateKeyPair();
         PublicKey publicKey = pair.getPublic();
         System.out.println("pub genarated");
@@ -74,6 +85,13 @@ public class KeyGenerator {
         return loadPublicKey();
     }
 
+    public PublicKey getPublicKey(String hexvalue) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException, NoSuchProviderException {
+        byte[] encodedPublicKey = ChainUtil.hexStringToByteArray(hexvalue);
+        KeyFactory keyFactory = KeyFactory.getInstance("DSA");
+        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(encodedPublicKey);
+        return keyFactory.generatePublic(publicKeySpec);
+    }
+
     public PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, IOException, InvalidKeySpecException {
         if (getResourcesFilePath("private.key") == null) {
             generateKeyPair();
@@ -89,4 +107,10 @@ public class KeyGenerator {
             return url.getPath();
         }
     }
+
+    public String getEncodedPublicKeyString(PublicKey publicKey) {
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
+        return ChainUtil.bytesToHex(x509EncodedKeySpec.getEncoded());
+    }
+
 }

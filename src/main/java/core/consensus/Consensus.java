@@ -5,17 +5,28 @@ import core.blockchain.Block;
 import core.blockchain.Blockchain;
 import core.blockchain.Transaction;
 import core.blockchain.Validation;
+
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Consensus {
 
+    private static Consensus consensus;
     ArrayList<AgreementCollector> agreementCollectors;
     ArrayList<Transaction> agreedTransactiions;
 
-    public Consensus() {
+    private Consensus() {
         agreedTransactiions = new ArrayList<>();
+        agreementCollectors = new ArrayList<>();
+    }
+
+    public static Consensus getInstance() {
+        if(consensus == null) {
+            consensus = new Consensus();
+        }
+        return consensus;
     }
 
     public boolean agreedTransaction(Transaction transaction) {
@@ -49,7 +60,7 @@ public class Consensus {
         return false;
     }
 
-    public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) {
+    public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) throws NoSuchAlgorithmException {
         boolean status = getAgreementCollectorByBlock(block).addAgreedNode(agreedNode);
         if(status) {
             checkForEligibilty(block);
@@ -58,7 +69,7 @@ public class Consensus {
         return false;
     }
 
-    public AgreementCollector getAgreementCollectorByBlock(Block block) {
+    public AgreementCollector getAgreementCollectorByBlock(Block block) throws NoSuchAlgorithmException {
         String id = AgreementCollector.generateAgreementCollectorId(block);
         for(int i = 0; i< agreementCollectors.size(); i++) {
             if(agreementCollectors.get(i).getId() == id) {
@@ -107,7 +118,7 @@ public class Consensus {
         }
     }
 
-    public void checkForEligibilty(Block block) {
+    public void checkForEligibilty(Block block) throws NoSuchAlgorithmException {
         int threshold = 1; //get from the predefined rules
 
         if(getAgreementCollectorByBlock(block).getAgreedNodesCount() == threshold) {

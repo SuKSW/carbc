@@ -1,20 +1,19 @@
 package chainUtil;
 
 import core.blockchain.Block;
+import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ChainUtil {
 
-    private KeyGenerator keyGenerator;
 
-    public ChainUtil() {
-        keyGenerator = new KeyGenerator();
-    }
+    public ChainUtil() {}
 
 
     public static byte[] sign(PrivateKey privateKey,String data) throws InvalidKeyException, NoSuchProviderException, NoSuchAlgorithmException, SignatureException {
@@ -52,11 +51,24 @@ public class ChainUtil {
         return hexString.toString();
     }
 
-    public static String getBlockHash(Block block) {
-        //get details in the blockheader
-        //get details in the block
-        //concat both get hash and return
-        return "block";
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
+
+    public static byte[] getBlockHash(Block block) throws NoSuchAlgorithmException {
+        JSONObject jsonBlock = new JSONObject(block);
+        return getHash(jsonBlock.toString());
+    }
+
+    public static String getBlockHashString(Block block) throws NoSuchAlgorithmException {
+        JSONObject jsonBlock = new JSONObject(block);
+        return bytesToHex(getHash(jsonBlock.toString()));
     }
 
 }

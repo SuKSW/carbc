@@ -1,7 +1,6 @@
 package network.Listener.Handlers;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import core.communicationHandler.RequestHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -19,9 +18,11 @@ public class CommonListenerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if(msg instanceof RequestMessage){
             RequestMessage requestMessage = (RequestMessage) msg;
-            Map<String, String> headers = requestMessage.readHeaders();
+            Map<String, String> headers = requestMessage.readHeaders(); //TODO: Inspect headers
             String data = requestMessage.readData();
-
+//            Handler.getInstance().handle(data, headers);
+            System.out.println("request passed to handler");
+            RequestHandler.getInstance().handleRequest(headers,data);
             //-------------------------------------------
             // call the workflow methods here after checking the headers
             // can use switch-case and call the methods
@@ -45,7 +46,6 @@ public class CommonListenerHandler extends ChannelInboundHandlerAdapter {
                 //finish the process
                 f.addListener(ChannelFutureListener.CLOSE);
             }
-
         }
     }
 
