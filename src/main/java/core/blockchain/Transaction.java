@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Transaction {
     private String sender;
     private ArrayList<Validation> validations;
-    private byte[] data;
+    private String data;
     private String transactionID;
     private TransactionInfo transactionInfo; //sell, insure, repair, register & etc
 
@@ -16,7 +16,7 @@ public class Transaction {
     // timestamp should assign current time
 
 
-    public Transaction(String sender, ArrayList<Validation> validations, byte[] data, String transactionID, TransactionInfo transactionInfo) {
+    public Transaction(String sender, ArrayList<Validation> validations, String data, String transactionID, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validations = validations;
         this.data = data;
@@ -33,7 +33,7 @@ public class Transaction {
         return validations;
     }
 
-    public byte[] getData() {
+    public String getData() {
         return data;
     }
 
@@ -55,7 +55,7 @@ public class Transaction {
         this.validations = validations;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 

@@ -6,10 +6,10 @@ import java.security.PublicKey;
 
 public class Validation {
     private Validator validator;
-    private byte[] signature;
+    private String  signature;
 
 
-    public Validation(Validator validator, byte[] signature) {
+    public Validation(Validator validator, String signature) {
         this.validator = validator;
         this.signature = signature;
     }
@@ -19,7 +19,7 @@ public class Validation {
         return validator;
     }
 
-    public byte[] getSignature() {
+    public String getSignature() {
         return signature;
     }
 
@@ -28,7 +28,7 @@ public class Validation {
         this.validator = validator;
     }
 
-    public void setSignature(byte[] signature) {
+    public void setSignature(String signature) {
         this.signature = signature;
     }
 

@@ -5,8 +5,8 @@ import java.sql.Timestamp;
 
 public class BlockHeader {
     private String version;
-    private byte[] previoushash;
-    private byte[] hash;
+    private String previoushash;
+    private String hash;
     private Timestamp timestamp;
     //private int txCount;
     private String signer;
@@ -17,15 +17,16 @@ public class BlockHeader {
     //constructor
 
 
-    public BlockHeader(String version, byte[] previoushash,byte[] hash, Timestamp timestamp, String signer, long blockNumber, boolean isApproved) {
+    public BlockHeader(String version, String previoushash, Timestamp timestamp, String signer, long blockNumber, boolean isApproved) {
         this.version = version;
         this.previoushash = previoushash;
-        this.hash = hash;
         this.timestamp = timestamp;
         this.signer = signer;
         this.blockNumber = blockNumber;
         this.isApproved = false;
     }
+
+
 
 
     // getters
@@ -34,7 +35,7 @@ public class BlockHeader {
         return version;
     }
 
-    public byte[] getPrevioushash() {
+    public String getPrevioushash() {
         return previoushash;
     }
 
@@ -50,7 +51,7 @@ public class BlockHeader {
         return blockNumber;
     }
 
-    public byte[] getHash() {
+    public String getHash() {
         return hash;
     }
 
@@ -65,7 +66,7 @@ public class BlockHeader {
         this.version = version;
     }
 
-    public void setPrevioushash(byte[] previoushash) {
+    public void setPrevioushash(String previoushash) {
         this.previoushash = previoushash;
     }
 
@@ -81,7 +82,7 @@ public class BlockHeader {
         this.blockNumber = blockNumber;
     }
 
-    public void setHash(byte[] hash) {
+    public void setHash(String hash) {
         this.hash = hash;
     }
 

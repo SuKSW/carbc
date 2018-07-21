@@ -12,6 +12,9 @@ public class Block {
     private BlockHeader header;
     private Transaction transactions;
 
+    private String genesisMsg;
+
+
     public Block(BlockHeader header, Transaction transactions) {
         this.header = header;
         this.transactions = transactions;
@@ -25,14 +28,14 @@ public class Block {
 //    private PublicKey signer;
 //    private long blockNumber;
 //    private boolean isApproved;
-    public Block(String version, byte[] previousHash, byte[] hash, Timestamp timestamp, String signer, long blockNumber, boolean isAprrroved, Transaction transaction){
-        BlockHeader blockHeader = new BlockHeader(version,previousHash,hash,timestamp,signer,blockNumber,false);
+    public Block(String version, String previousHash, Timestamp timestamp, String signer, long blockNumber, boolean isAprrroved, Transaction transaction){
+        BlockHeader blockHeader = new BlockHeader(version,previousHash,timestamp,signer,blockNumber,false);
         new Block(blockHeader,transaction);
     }
 
 
-    public Block(){
-
+    public Block(BlockHeader genesisHeader){
+        this.header =genesisHeader;
     }
 
 
@@ -59,7 +62,7 @@ public class Block {
 
     public static Block createGenesis(){
 
-      //  BlockHeader blockHeader = new BlockHeader("1",ChainUtil.hexStringToByteArray("Genesis Bolock"),ChainUtil.hexStringToByteArray("Genesis Block"),);
+        //BlockHeader blockHeader = new BlockHeader("1",ChainUtil.hexStringToByteArray("Genesis Block"),);
         return null;
     }
 
