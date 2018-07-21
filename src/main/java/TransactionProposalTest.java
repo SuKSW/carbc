@@ -27,6 +27,6 @@ public class TransactionProposalTest {
         TransactionProposal proposal = new TransactionProposal("sender",validators,
                 "data","proposal-1",currentTimestamp,transactionInfo);
 
-        proposal.isValid(); 
+        proposal.isValid();
     }
 }
