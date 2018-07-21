@@ -1,6 +1,7 @@
 import chainUtil.ChainUtil;
 import core.blockchain.TransactionInfo;
 import core.blockchain.TransactionProposal;
+import core.blockchain.TransactionResponse;
 import core.blockchain.Validator;
 
 import java.io.IOException;
@@ -27,6 +28,12 @@ public class TransactionProposalTest {
         TransactionProposal proposal = new TransactionProposal("sender",validators,
                 "data","proposal-1",currentTimestamp,transactionInfo);
 
+        proposal.sendProposal();
+
         proposal.isValid();
+
+        TransactionResponse response  = proposal.signProposal();
+
+        response.addResponse();
     }
 }
