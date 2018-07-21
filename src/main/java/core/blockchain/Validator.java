@@ -4,19 +4,19 @@ import java.security.PublicKey;
 
 public class Validator {
 
-    private PublicKey validator;
+    private String validator;
     private boolean isMandotory;
     private String role;
     private int priority;
 
-    public Validator(PublicKey validator, String role, boolean isMandotory, int priority){
+    public Validator(String validator, String role, boolean isMandotory, int priority){
         this.validator = validator;
         this.role = role;
         this.isMandotory = true;
         this.priority = priority;
     }
 
-    public PublicKey getValidator() {
+    public String getValidator() {
         return validator;
     }
 
@@ -33,7 +33,7 @@ public class Validator {
     }
 
 
-    public void setValidator(PublicKey validator) {
+    public void setValidator(String validator) {
         this.validator = validator;
     }
 
@@ -50,9 +50,11 @@ public class Validator {
     }
 
 
-    @Override
-    public String toString(){
+//    @Override
+//    public String toString(){
+//
+//        return "'Validator:'" + this.validator+"'isMandatory:'" + this.isMandotory + "'role'" + this.role + "'Priority'" + this.priority;
+//    }
+//
 
-        return "'Validator:'" + this.validator+"'isMandatory:'" + this.isMandotory + "'role'" + this.role + "'Priority'" + this.priority;
-    }
 }

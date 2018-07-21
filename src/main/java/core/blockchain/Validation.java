@@ -32,10 +32,10 @@ public class Validation {
         this.signature = signature;
     }
 
-    @Override
-    public String toString(){
-
-        return "'Validator:'" + this.validator.toString() + "'Signature:'" + ChainUtil.bytesToHex(this.signature);
-    }
+//    @Override
+//    public String toString(){
+//
+//        return "'Validator:'" + this.validator.toString() + "'Signature:'" + ChainUtil.bytesToHex(this.signature);
+//    }
 
 }

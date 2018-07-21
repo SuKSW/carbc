@@ -1,7 +1,11 @@
 package core.blockchain;
 
+import chainUtil.ChainUtil;
+
 import java.security.PublicKey;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class Block {
 
@@ -21,12 +25,15 @@ public class Block {
 //    private PublicKey signer;
 //    private long blockNumber;
 //    private boolean isApproved;
-    public Block(String version, byte[] previousHash, byte[] hash, Timestamp timestamp, PublicKey signer, long blockNumber, boolean isAprrroved, Transaction transaction){
+    public Block(String version, byte[] previousHash, byte[] hash, Timestamp timestamp, String signer, long blockNumber, boolean isAprrroved, Transaction transaction){
         BlockHeader blockHeader = new BlockHeader(version,previousHash,hash,timestamp,signer,blockNumber,false);
         new Block(blockHeader,transaction);
     }
 
 
+    public Block(){
+
+    }
 
 
     public BlockHeader getHeader() {
@@ -47,13 +54,12 @@ public class Block {
     }
 
 
-    //To do
-    public Block createBlock(){
-        return this;
-    }
+
+
 
     public static Block createGenesis(){
 
+      //  BlockHeader blockHeader = new BlockHeader("1",ChainUtil.hexStringToByteArray("Genesis Bolock"),ChainUtil.hexStringToByteArray("Genesis Block"),);
         return null;
     }
 
@@ -61,7 +67,7 @@ public class Block {
 
     }
     public boolean sendBlockToValidator(Validator validator){
-        PublicKey publicKey = validator.getValidator();
+        String publicKey = validator.getValidator();
         //send block to validator
         return false;
     }

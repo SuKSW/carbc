@@ -9,7 +9,7 @@ public class BlockHeader {
     private byte[] hash;
     private Timestamp timestamp;
     //private int txCount;
-    private PublicKey signer;
+    private String signer;
     private long blockNumber;
     private boolean isApproved;
 
@@ -17,7 +17,7 @@ public class BlockHeader {
     //constructor
 
 
-    public BlockHeader(String version, byte[] previoushash,byte[] hash, Timestamp timestamp, PublicKey signer, long blockNumber, boolean isApproved) {
+    public BlockHeader(String version, byte[] previoushash,byte[] hash, Timestamp timestamp, String signer, long blockNumber, boolean isApproved) {
         this.version = version;
         this.previoushash = previoushash;
         this.hash = hash;
@@ -42,7 +42,7 @@ public class BlockHeader {
         return timestamp;
     }
 
-    public PublicKey getSigner() {
+    public String getSigner() {
         return signer;
     }
 
@@ -73,7 +73,7 @@ public class BlockHeader {
         this.timestamp = timestamp;
     }
 
-    public void setSigner(PublicKey signer) {
+    public void setSigner(String signer) {
         this.signer = signer;
     }
 

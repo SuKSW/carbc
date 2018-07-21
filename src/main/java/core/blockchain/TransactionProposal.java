@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class TransactionProposal {
-    private PublicKey sender;
+    private String sender;
     private Validator[] validators;
     private byte[] data;
     private String proposalID;
@@ -24,7 +24,7 @@ public class TransactionProposal {
     private static HashMap<String,TransactionProposal> proposals;
 
 
-    public TransactionProposal(PublicKey sender, Validator[] validators, byte[] data, String proposalID, Timestamp timestamp, TransactionInfo transactionInfo, Validation validation) {
+    public TransactionProposal(String sender, Validator[] validators, byte[] data, String proposalID, Timestamp timestamp, TransactionInfo transactionInfo, Validation validation) {
         this.sender = sender;
         this.validators = validators;
         this.data = data;
@@ -35,7 +35,7 @@ public class TransactionProposal {
     }
 
 
-    public PublicKey getSender() {
+    public String getSender() {
         return sender;
     }
 
@@ -67,7 +67,7 @@ public class TransactionProposal {
         return validation;
     }
 
-    public void setSender(PublicKey sender) {
+    public void setSender(String sender) {
         this.sender = sender;
     }
 
@@ -112,23 +112,22 @@ public class TransactionProposal {
     
     public boolean sendProposal(){
         for (Validator validator: this.validators){
-            PublicKey validatorPublicKey = validator.getValidator();
+            String validatorPublicKey = validator.getValidator();
             // create socket connection and send proposal and return true
         }
         return false;
     }
 
     public TransactionResponse signProposal() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-            KeyGenerator keygen = new KeyGenerator();
-            byte[] signature = ChainUtil.sign(keygen.getPrivateKey(), this.toString());//signature of the proposal
+
+            byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), this.toString());//signature of the proposal
             this.getValidators();
 
             Validator[] validators = this.getValidators();
             for (Validator validator1:validators){
-                if (validator1.getValidator()==keygen.getPublicKey()){
+                if (KeyGenerator.getInstance().getPublicKey(validator1.getValidator()).equals(KeyGenerator.getInstance().getPublicKey()) ){
                     Validator  validator = validator1;
                     TransactionResponse response = new TransactionResponse(this.proposalID, validator,signature);
-                    keygen = null;
                     return response;
                 }
             }
@@ -169,7 +168,7 @@ public class TransactionProposal {
         System.out.println("is this valid? ");
         String isValid = scanner.next();
         if (isValid.equalsIgnoreCase("yes")){
-            PublicKey sender = this.getSender();
+            String sender = this.getSender();
             TransactionResponse response =  this.signProposal();
             if (response!=null){
                 //connection and send
