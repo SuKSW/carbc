@@ -1,8 +1,11 @@
 package core.blockchain;
 
 import chainUtil.ChainUtil;
+import chainUtil.KeyGenerator;
 
+import java.io.IOException;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,12 +49,12 @@ public class TransactionResponse {
 
 
 
-    public void addResponse() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException {
+    public void addResponse() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException, InvalidKeySpecException, IOException {
 
         String proposalID = this.getProposalID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
         String proposalString = proposal.toString();
-        if (proposalID != null & ChainUtil.verify(this.getValidator().getValidator(),this.getSignature(),proposalString)){ //
+        if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),this.getSignature(),proposalString)){ //
 
             HashMap<String, ArrayList<TransactionResponse>> responsePool = TempResponsePool.getResponsePool();
 
@@ -96,9 +99,9 @@ public class TransactionResponse {
         }
     }
 
-    @Override
-    public String toString(){
-        return "'ProposalID:'" + this.ProposalID +"'Validator:'" + this.validator + "'Signatute'" + ChainUtil.bytesToHex(this.signature);
-    }
+//    @Override
+//    public String toString(){
+//        return "'ProposalID:'" + this.ProposalID +"'Validator:'" + this.validator + "'Signatute'" + ChainUtil.bytesToHex(this.signature);
+//    }
 
 }

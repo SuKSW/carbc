@@ -6,7 +6,7 @@ import java.security.*;
 import java.util.ArrayList;
 
 public class Transaction {
-    private PublicKey sender;
+    private String sender;
     private ArrayList<Validation> validations;
     private byte[] data;
     private String transactionID;
@@ -16,7 +16,7 @@ public class Transaction {
     // timestamp should assign current time
 
 
-    public Transaction(PublicKey sender, ArrayList<Validation> validations, byte[] data, String transactionID, TransactionInfo transactionInfo) {
+    public Transaction(String sender, ArrayList<Validation> validations, byte[] data, String transactionID, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validations = validations;
         this.data = data;
@@ -25,7 +25,7 @@ public class Transaction {
     }
 
 
-    public PublicKey getSender() {
+    public String getSender() {
         return sender;
     }
 
@@ -47,7 +47,7 @@ public class Transaction {
     }
 
 
-    public void setSender(PublicKey sender) {
+    public void setSender(String sender) {
         this.sender = sender;
     }
 
@@ -77,10 +77,10 @@ public class Transaction {
     }
 
 
-    @Override
-    public String toString(){
-        return "'Sender:'" +this.sender +"'Validations'" + this.validationArrayToString(this.validations) + "'Data:'" +
-                ChainUtil.bytesToHex(data) + "'TransactionInfo:'" + this.transactionInfo.toString();
-    }
+//    @Override
+//    public String toString(){
+//        return "'Sender:'" +this.sender +"'Validations'" + this.validationArrayToString(this.validations) + "'Data:'" +
+//                ChainUtil.bytesToHex(data) + "'TransactionInfo:'" + this.transactionInfo.toString();
+//    }
 
 }
