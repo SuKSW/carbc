@@ -1,8 +1,11 @@
 package core.smartContract;
 
+import core.blockchain.*;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 public class Main {
@@ -24,6 +27,33 @@ public class Main {
 
         TransactionDummy tr = new TransactionDummy();
         tr.executeSmartContractMethod();
+
+    }
+
+
+    public static void executeTransaction(Block block){
+        BlockHeader blockHeader = block.getHeader();
+        long blockNumber = blockHeader.getBlockNumber();
+
+        Transaction transaction = block.getTransaction();
+        PublicKey sender = transaction.getSender();
+        Validation[] validation = transaction.getValidations();
+        byte[] data = transaction.getData();
+        String transactionID = transaction.getTransactionID();
+        TransactionInfo transactionInfo = transaction.getTransactionInfo();
+
+//        int smartContractId = transactionInfo.getSmartContractId;
+//        byte[] smartContractSignature = transactionInfo.getSmartContractSignature();
+//        String smartContractMethod = transactionInfo.getSmartContractMethod();
+//        String[] parameters = transactionInfo.getParameters();
+
+
+        int smartContractId;
+        byte[] smartContractSignature;
+        String smartContractMethod;
+        String[] parameters;
+
+
 
     }
 }
