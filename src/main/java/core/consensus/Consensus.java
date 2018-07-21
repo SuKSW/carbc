@@ -1,3 +1,4 @@
+
 package core.consensus;
 
 import core.blockchain.Block;
@@ -5,18 +6,27 @@ import core.blockchain.Blockchain;
 import core.blockchain.Transaction;
 import core.blockchain.Validation;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Consensus {
 
+    private static Consensus consensus;
     ArrayList<AgreementCollector> agreementCollectors;
     ArrayList<Transaction> agreedTransactiions;
 
-    public Consensus() {
-        agreementCollectors = new ArrayList<>();
+    private Consensus() {
         agreedTransactiions = new ArrayList<>();
+        agreementCollectors = new ArrayList<>();
+    }
+
+    public static Consensus getInstance() {
+        if(consensus == null) {
+            consensus = new Consensus();
+        }
+        return consensus;
     }
 
     public boolean agreedTransaction(Transaction transaction) {
@@ -32,7 +42,6 @@ public class Consensus {
         ArrayList<PublicKey> validators = new ArrayList<>();
        // Validation[] validations = block.getTransaction().getValidations(); //changed
         ArrayList<Validation> validations = block.getTransaction().getValidations();
-
         for(Validation validation: validations) {
             validators.add(validation.getValidator().getValidator());
         }
@@ -46,18 +55,23 @@ public class Consensus {
     }
 
     public boolean checkAgreementForBlock (Block block) {
+
         if(agreedTransactiions.contains(block.getTransaction())){ //changed
             return true;
         }
         return false;
     }
 
-    public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) {
-        //when agreed node add to the array we need to check whether k number of agreement received
-        return getAgreementCollectorByBlock(block).addAgreedNode(agreedNode);
+    public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) throws NoSuchAlgorithmException {
+        boolean status = getAgreementCollectorByBlock(block).addAgreedNode(agreedNode);
+        if(status) {
+            checkForEligibilty(block);
+            return true;
+        }
+        return false;
     }
 
-    public AgreementCollector getAgreementCollectorByBlock(Block block) {
+    public AgreementCollector getAgreementCollectorByBlock(Block block) throws NoSuchAlgorithmException {
         String id = AgreementCollector.generateAgreementCollectorId(block);
         for(int i = 0; i< agreementCollectors.size(); i++) {
             if(agreementCollectors.get(i).getId() == id) {
@@ -67,34 +81,52 @@ public class Consensus {
         return null;
     }
 
-//    public boolean insertBlock(Block block) {
-//        long receivedBlockNumber = block.getHeader().getBlockNumber();
-//        Timestamp receivedBlockTimestamp = block.getHeader().getTimestamp();
-//
-//        if (!blockExistence(block)) {
-//            Blockchain.addBlock(block);
-//            return true;
-//        } else {
-//            Block existBlock = Blockchain.getBlockByNumber(receivedBlockNumber);
-//
-//            if (existBlock.getHeader().getTimestamp().after(receivedBlockTimestamp)) {
-//                Blockchain.rollBack(receivedBlockNumber);
-//                Blockchain.addBlock(block);
-//                return true;
-//            } else if (existBlock.getHeader().getTimestamp() == receivedBlockTimestamp) {
-//                Blockchain.rollBack(receivedBlockNumber);
-//                return false;
-//            }
-//            return false;
-//        }
-//    }
+    public boolean insertBlock(Block block) {
+        long receivedBlockNumber = block.getHeader().getBlockNumber();
+        Timestamp receivedBlockTimestamp = block.getHeader().getTimestamp();
+
+        if (!blockExistence(block)) {
+            Blockchain.getBlockchain().addBlock(block);
+            return true;
+        } else {
+            Block existBlock = Blockchain.getBlockchain().getBlockByNumber(receivedBlockNumber);
+
+            if (existBlock.getHeader().getTimestamp().after(receivedBlockTimestamp)) {
+                Blockchain.getBlockchain().rollBack(receivedBlockNumber);
+                Blockchain.getBlockchain().addBlock(block);
+                return true;
+            } else if (existBlock.getHeader().getTimestamp() == receivedBlockTimestamp) {
+                Blockchain.getBlockchain().rollBack(receivedBlockNumber);
+                return false;
+            }
+            return false;
+        }
+    }
 
     public boolean blockExistence(Block block) {
-        if(Blockchain.getBlockchainArray().size() > block.getHeader().getBlockNumber()) {
+        if(Blockchain.getBlockchain().getBlockchainArray().size() > block.getHeader().getBlockNumber()) {
             return true;
         }
         return false;
     }
 
+    public void BlockHandler(Block block) {
+        if(agreedTransaction(block.getTransaction())) {
+            System.out.println("Agreed block");
+            insertBlock(block);
+        }else {
+            System.out.println("Not agreed block. requesting agreements");
+            requestAgreementForBlock(block);
+        }
+    }
+
+    public void checkForEligibilty(Block block) throws NoSuchAlgorithmException {
+        int threshold = 1; //get from the predefined rules
+
+        if(getAgreementCollectorByBlock(block).getAgreedNodesCount() == threshold) {
+            System.out.println("Agreements received upto threshold level");
+            insertBlock(block);
+        }
+    }
 
 }

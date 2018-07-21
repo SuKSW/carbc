@@ -17,7 +17,7 @@ public class BlockMessageCreator {
         requestMessage.addHeader("timestamp", timestamp.toString());
         requestMessage.addHeader("sender", sender);
         requestMessage.addHeader("receiver", receiver);
-        requestMessage.addHeader("messageType", messageType);
+//        requestMessage.addHeader("messageType", messageType);
         requestMessage.addTheData(block.toString());
         return requestMessage;
     }

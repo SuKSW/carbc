@@ -37,10 +37,10 @@ public class TestSendBlock {
         /*
         * when we want to send a block
         * */
-        JSONObject ourBlock = new JSONObject();
-        ourBlock.put("someField", "someValue");
-        RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(ourBlock);
-        blockMessage.addHeader("keepActive", "false");
-        node.sendMessageToNeighbour(0, blockMessage);
+//        JSONObject ourBlock = new JSONObject();
+//        ourBlock.put("someField", "someValue");
+//        RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(ourBlock);
+//        blockMessage.addHeader("keepActive", "false");
+//        node.sendMessageToNeighbour(0, blockMessage);
     }
 }
