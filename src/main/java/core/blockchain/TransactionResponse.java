@@ -12,10 +12,10 @@ import java.util.HashMap;
 public class TransactionResponse {
     private String ProposalID;
     private Validator validator;
-    private byte[] signature;
+    private String signature;
 
 
-    public TransactionResponse(String proposalID, Validator validator, byte[] signature) {
+    public TransactionResponse(String proposalID, Validator validator, String signature) {
         ProposalID = proposalID;
         this.validator = validator;
         this.signature = signature;
@@ -30,7 +30,7 @@ public class TransactionResponse {
         return validator;
     }
 
-    public byte[] getSignature() {
+    public String getSignature() {
         return signature;
     }
 
@@ -43,7 +43,7 @@ public class TransactionResponse {
         this.validator = validator;
     }
 
-    public void setSignature(byte[] signature) {
+    public void setSignature(String signature) {
         this.signature = signature;
     }
 
@@ -54,7 +54,7 @@ public class TransactionResponse {
         String proposalID = this.getProposalID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
         String proposalString = proposal.toString();
-        if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),this.getSignature(),proposalString)){ //
+        if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
 
             HashMap<String, ArrayList<TransactionResponse>> responsePool = TempResponsePool.getResponsePool();
 

@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class TransactionProposal {
     private String sender;
-    private Validator[] validators;
-    private byte[] data;
+    private ArrayList<Validator> validators;
+    private String data;
     private String proposalID;
     private Timestamp timestamp;
     private TransactionInfo transactionInfo;
@@ -24,14 +24,14 @@ public class TransactionProposal {
     private static HashMap<String,TransactionProposal> proposals;
 
 
-    public TransactionProposal(String sender, Validator[] validators, byte[] data, String proposalID, Timestamp timestamp, TransactionInfo transactionInfo, Validation validation) {
+    public TransactionProposal(String sender, ArrayList<Validator> validators, String data, String proposalID, Timestamp timestamp, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validators = validators;
         this.data = data;
         this.proposalID = proposalID;
         this.timestamp = timestamp;
         this.transactionInfo = transactionInfo;
-        this.validation = validation;
+        //this.validation = validation;
     }
 
 
@@ -39,11 +39,11 @@ public class TransactionProposal {
         return sender;
     }
 
-    public Validator[] getValidators() {
+    public ArrayList<Validator> getValidators() {
         return validators;
     }
 
-    public byte[] getData() {
+    public String getData() {
         return data;
     }
 
@@ -71,11 +71,11 @@ public class TransactionProposal {
         this.sender = sender;
     }
 
-    public void setValidators(Validator[] validators) {
+    public void setValidators(ArrayList<Validator> validators) {
         this.validators = validators;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -104,13 +104,14 @@ public class TransactionProposal {
     }
 
 
-    public TransactionProposal createTransactionProposal(){
-        //save proposal in proposals hashmap
-        return this;
-    }
+//    public TransactionProposal createTransactionProposal(){
+//        //save proposal in proposals hashmap
+//        return this;
+//    }
 
     
     public boolean sendProposal(){
+        //save proposal in proposals hashmap
         for (Validator validator: this.validators){
             String validatorPublicKey = validator.getValidator();
             // create socket connection and send proposal and return true
@@ -123,11 +124,12 @@ public class TransactionProposal {
             byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), this.toString());//signature of the proposal
             this.getValidators();
 
-            Validator[] validators = this.getValidators();
+            ArrayList<Validator> validators = this.getValidators();
             for (Validator validator1:validators){
                 if (KeyGenerator.getInstance().getPublicKey(validator1.getValidator()).equals(KeyGenerator.getInstance().getPublicKey()) ){
                     Validator  validator = validator1;
-                    TransactionResponse response = new TransactionResponse(this.proposalID, validator,signature);
+                    TransactionResponse response = new TransactionResponse(this.proposalID, validator,ChainUtil.bytesToHex(signature));
+                    System.out.println(response); //print response
                     return response;
                 }
             }
@@ -154,9 +156,16 @@ public class TransactionProposal {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         byte[] hash = ChainUtil.getHash(transaction.toString());
-        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchainArray().getLast().getHeader().getHash(),hash,timestamp,this.sender,Blockchain.getBlockchainArray().size()+1,true);
+        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchainArray().getLast().getHeader().getHash(),timestamp,this.sender,Blockchain.getBlockchainArray().size()+1,true);
 
         Block block = new Block(blockHeader,transaction);
+        //convert to string
+
+        String blockHash = ChainUtil.getBlockHashString(block);
+
+        // set hash to blockheader
+        block.getHeader().setHash(blockHash);
+
         return block;
     }
 
