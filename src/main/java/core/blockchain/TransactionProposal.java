@@ -112,6 +112,7 @@ public class TransactionProposal {
     
     public boolean sendProposal(){
         //save proposal in proposals hashmap
+        proposals.put(this.proposalID,this);
         for (Validator validator: this.validators){
             String validatorPublicKey = validator.getValidator();
             // create socket connection and send proposal and return true
