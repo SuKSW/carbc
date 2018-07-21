@@ -48,4 +48,11 @@ public class Validator {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
+
+    @Override
+    public String toString(){
+
+        return "'Validator:'" + this.validator+"'isMandatory:'" + this.isMandotory + "'role'" + this.role + "'Priority'" + this.priority;
+    }
 }

@@ -1,11 +1,13 @@
 package core.blockchain;
 
-import java.security.PublicKey;
+import chainUtil.ChainUtil;
+
+import java.security.*;
 import java.util.ArrayList;
 
 public class Transaction {
     private PublicKey sender;
-    private Validation[] validations;
+    private ArrayList<Validation> validations;
     private byte[] data;
     private String transactionID;
     private TransactionInfo transactionInfo; //sell, insure, repair, register & etc
@@ -14,7 +16,7 @@ public class Transaction {
     // timestamp should assign current time
 
 
-    public Transaction(PublicKey sender, Validation[] validations, byte[] data, String transactionID, TransactionInfo transactionInfo) {
+    public Transaction(PublicKey sender, ArrayList<Validation> validations, byte[] data, String transactionID, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validations = validations;
         this.data = data;
@@ -27,7 +29,7 @@ public class Transaction {
         return sender;
     }
 
-    public Validation[] getValidations() {
+    public ArrayList<Validation> getValidations() {
         return validations;
     }
 
@@ -49,7 +51,7 @@ public class Transaction {
         this.sender = sender;
     }
 
-    public void setValidations(Validation[] validations) {
+    public void setValidations(ArrayList<Validation> validations) {
         this.validations = validations;
     }
 
@@ -66,45 +68,19 @@ public class Transaction {
     }
 
 
-
-    //To do
-    public Transaction createTransaction(String proposalID){
-        int mandatoryCount = 0;
-        int signCount = 0;
-        int mandatorySignCount = 0;
-        ArrayList<Validation> validations = new ArrayList<Validation>();
-
-        ArrayList responses = TempResponsePool.getResponsePool().get(proposalID);
-        for (Object response:responses){
-            TransactionResponse respons = (TransactionResponse)response;
-            Validation validation = new Validation(respons.getValidator(),respons.getSignature());
-
-
-
-
+    private String validationArrayToString(ArrayList<Validation> validations1){
+        String validationStr= "";
+        for (Validation validation: validations1){
+            validationStr = validationStr + validation.toString() + " ";
         }
-
-//        Validator[] validators =proposal.getvalidators();
-//
-//        for (int i = 0; i<validators.length;i++){
-//            if(validators[i].isMandotory()){
-//                mandatoryCount++;
-//
-//            }
-//            else {
-
-
-//                signCount++;
-//            }
-//        }
-
-        return this;
+        return validationStr;
     }
 
 
-    public boolean isValid(Transaction transaction){
-
-        return false;
+    @Override
+    public String toString(){
+        return "'Sender:'" +this.sender +"'Validations'" + this.validationArrayToString(this.validations) + "'Data:'" +
+                ChainUtil.bytesToHex(data) + "'TransactionInfo:'" + this.transactionInfo.toString();
     }
 
 }
