@@ -1,13 +1,17 @@
 
 package core.consensus;
 
+import chainUtil.ChainUtil;
+import chainUtil.KeyGenerator;
 import core.blockchain.Block;
 import core.blockchain.Blockchain;
 import core.blockchain.Transaction;
 import core.blockchain.Validation;
+import core.communicationHandler.MessageSender;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.io.IOException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -29,17 +33,9 @@ public class Consensus {
         return consensus;
     }
 
-    public boolean agreedTransaction(Transaction transaction) {
-        if (!agreedTransactiions.contains(transaction)) {
-            agreedTransactiions.add(transaction);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public boolean requestAgreementForBlock(Block block) {
-        ArrayList<PublicKey> validators = new ArrayList<>();
+        ArrayList<String> validators = new ArrayList<>();
        // Validation[] validations = block.getTransaction().getValidations(); //changed
         ArrayList<Validation> validations = block.getTransaction().getValidations();
         for(Validation validation: validations) {
@@ -50,7 +46,18 @@ public class Consensus {
         return true;
     }
 
-    public boolean sendAgreementForBlock(Block block, boolean agreed, PublicKey receiver) {
+    public boolean responseForBlockAgreement(Block block, String agreed, int neighbourIndex) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        if(agreedTransaction(block.getTransaction())) {
+            sendAgreementForBlock(block,agreed,neighbourIndex);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean sendAgreementForBlock(Block block, String agreed, int neighbourIndex) throws
+            InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        MessageSender.getInstance().sendAgreement(block,1,agreed,
+                ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),agreed));
         return true;
     }
 
@@ -60,6 +67,15 @@ public class Consensus {
             return true;
         }
         return false;
+    }
+
+    public boolean agreedTransaction(Transaction transaction) {
+        if (!agreedTransactiions.contains(transaction)) {
+            agreedTransactiions.add(transaction);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) throws NoSuchAlgorithmException {

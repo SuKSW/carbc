@@ -35,9 +35,9 @@ public class ChainUtilTest {
         System.out.println(hash2);
         try {
             System.out.println("*********signature*********");
-            byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),Integer.toString(hash));
+            byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),"ashan");
             System.out.println(ChainUtil.bytesToHex(signature));
-
+            System.out.println(ChainUtil.bytesToHex(signature).length());
             System.out.println("*********verification*********");
             System.out.println(ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(),signature,Integer.toString(hash)));
         } catch (Exception e) {
