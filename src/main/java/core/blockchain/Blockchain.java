@@ -3,7 +3,7 @@ package core.blockchain;
 import java.util.LinkedList;
 
 public class Blockchain {
-    private static LinkedList<Block> blockchainArray;
+    private  LinkedList<Block> blockchainArray;
     private static Blockchain blockchain;
 
     private Blockchain() {
@@ -18,7 +18,7 @@ public class Blockchain {
         return blockchain;
     }
 
-    public static LinkedList<Block> getBlockchainArray() {
+    public  LinkedList<Block> getBlockchainArray() {
         return blockchainArray;
     }
 

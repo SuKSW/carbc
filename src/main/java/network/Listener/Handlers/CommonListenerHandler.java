@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ public class CommonListenerHandler extends ChannelInboundHandlerAdapter {
     private final Logger log = LoggerFactory.getLogger(CommonListenerHandler.class);
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         if(msg instanceof RequestMessage){
             RequestMessage requestMessage = (RequestMessage) msg;
             Map<String, String> headers = requestMessage.readHeaders(); //TODO: Inspect headers

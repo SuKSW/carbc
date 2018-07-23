@@ -2,6 +2,9 @@ package core.blockchain;
 
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
+import core.communicationHandler.MessageSender;
+import core.communicationHandler.RequestHandler;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.*;
@@ -96,6 +99,9 @@ public class TransactionProposal {
 
 
     public static HashMap<String, TransactionProposal> getProposals() {
+        if (proposals == null){
+            proposals = new HashMap<>();
+        }
         return proposals;
     }
 
@@ -103,6 +109,11 @@ public class TransactionProposal {
         TransactionProposal.proposals = proposals;
     }
 
+
+    public static String getProposalString(TransactionProposal proposal) throws NoSuchAlgorithmException {
+        JSONObject jsonProposal = new JSONObject(proposal);
+        return (jsonProposal.toString());
+    }
 
 //    public TransactionProposal createTransactionProposal(){
 //        //save proposal in proposals hashmap
@@ -112,26 +123,31 @@ public class TransactionProposal {
     
     public boolean sendProposal(){
         //save proposal in proposals hashmap
+        proposals = TransactionProposal.getProposals();
         proposals.put(this.proposalID,this);
         for (Validator validator: this.validators){
             String validatorPublicKey = validator.getValidator();
             // create socket connection and send proposal and return true
+            MessageSender.getInstance().reqestTransactionValidation(this,1); //change neighbour
         }
         return false;
     }
 
     public TransactionResponse signProposal() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
 
-            byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), this.toString());//signature of the proposal
-            this.getValidators();
+        System.out.println(TransactionProposal.getProposalString(this));
+            byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getProposalString(this));//signature of the proposal
+        System.out.println("signature" + ChainUtil.bytesToHex(signature));
 
             ArrayList<Validator> validators = this.getValidators();
             for (Validator validator1:validators){
-                if (KeyGenerator.getInstance().getPublicKey(validator1.getValidator()).equals(KeyGenerator.getInstance().getPublicKey()) ){
+                if (validator1.getValidator().equals(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey())) ){
                     Validator  validator = validator1;
                     TransactionResponse response = new TransactionResponse(this.proposalID, validator,ChainUtil.bytesToHex(signature));
-                    System.out.println(response); //print response
+                    System.out.println(response); //print responseye
                     return response;
+                }else{
+                    System.out.println("not correct validator");
                 }
             }
        return null;
@@ -153,11 +169,11 @@ public class TransactionProposal {
 
         }
 
-        Transaction transaction =new Transaction(this.getSender(),validations,this.data,"",this.getTransactionInfo());
+        Transaction transaction = new Transaction(this.getSender(),validations,this.data,this.proposalID,this.getTransactionInfo());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         byte[] hash = ChainUtil.getHash(transaction.toString());
-        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchainArray().getLast().getHeader().getHash(),timestamp,this.sender,Blockchain.getBlockchainArray().size()+1,true);
+        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchain().getBlockchainArray().getLast().getHeader().getHash(),timestamp,this.sender,Blockchain.getBlockchain().getBlockchainArray().size()+1,true);
 
         Block block = new Block(blockHeader,transaction);
         //convert to string
@@ -183,6 +199,9 @@ public class TransactionProposal {
             if (response!=null){
                 //connection and send
                 //sendResponse();
+                MessageSender.getInstance().sendTransactionValidation(this,1,
+                        ChainUtil.hexStringToByteArray(response.getSignature()));  //should send transaction response not proposal
+                System.out.println(response);
                 System.out.println("sending response");
             }
         }

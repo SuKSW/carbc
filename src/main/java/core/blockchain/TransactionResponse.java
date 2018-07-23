@@ -2,6 +2,7 @@ package core.blockchain;
 
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
+import core.communicationHandler.MessageSender;
 
 import java.io.IOException;
 import java.security.*;
@@ -49,20 +50,71 @@ public class TransactionResponse {
 
 
 
-    public void addResponse() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException, InvalidKeySpecException, IOException {
+    public void addResponse() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
+            SignatureException, InvalidKeySpecException, IOException {
+
 
         String proposalID = this.getProposalID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
-        String proposalString = proposal.toString();
-        if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
+        String proposalString = TransactionProposal.getProposalString(proposal);
+        if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
+                ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
 
             HashMap<String, ArrayList<TransactionResponse>> responsePool = TempResponsePool.getResponsePool();
 
             if (responsePool.get(proposalID) != null && !responsePool.get(proposalID).isEmpty()) {
                 ArrayList<TransactionResponse> responseArray = responsePool.get(proposalID);
+                System.out.println(responseArray.get(0).equals(this));
                 if (!responseArray.contains(this)) {
+                    if (ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),
+                            ChainUtil.hexStringToByteArray(this.getSignature()),TransactionProposal.getProposalString(proposal))){
+                        boolean isContain = false;
+
+                        for (TransactionResponse response1: responseArray){
+                            if (response1.getValidator().equals(this)){
+                                isContain = true;
+                                break;
+                            }
+                        }
+
+                        if (!isContain){
+                            responseArray.add(this);
+                            responsePool.replace(proposalID, responseArray);
+                            if (responseArray.size() > proposal.getTransactionInfo().getThreshod()){
+                                int mandatorySignCount = 0;
+                                int mandatorySignCountInProposal = 0;
+
+                                for (TransactionResponse response: responseArray){
+                                    if(response.getValidator().isMandotory()){
+                                        mandatorySignCount++;
+                                    }
+                                }
+
+                                for (Validator validator:proposal.getValidators()){
+                                    if (validator.isMandotory()){
+                                        mandatorySignCountInProposal++;
+                                    }
+                                }
+
+                                if (mandatorySignCount==mandatorySignCountInProposal){
+                                    Block block = proposal.createBlock(proposal.getProposalID());
+                                    MessageSender.getInstance().BroadCastBlock(block);
+                                    System.out.println(block);
+                                }
+                            }
+                        }
+                    }
+                }
+                return;
+            } else {
+
+                if (ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),
+                        ChainUtil.hexStringToByteArray(this.getSignature()),TransactionProposal.getProposalString(proposal))){
+                    ArrayList<TransactionResponse> responseArray = new ArrayList<TransactionResponse>();
                     responseArray.add(this);
-                    responsePool.replace(proposalID, responseArray);
+                    responsePool.put(proposalID, responseArray);
+                    TempResponsePool.setResponsePool(responsePool);
+
                     if (responseArray.size() > proposal.getTransactionInfo().getThreshod()){
                         int mandatorySignCount = 0;
                         int mandatorySignCountInProposal = 0;
@@ -80,16 +132,13 @@ public class TransactionResponse {
                         }
 
                         if (mandatorySignCount==mandatorySignCountInProposal){
-                            proposal.createBlock(proposal.getProposalID());
+                            Block block = proposal.createBlock(proposal.getProposalID());
+                            MessageSender.getInstance().BroadCastBlock(block);
+                            System.out.println(block);
                         }
                     }
                 }
-                return;
-            } else {
-                ArrayList<TransactionResponse> responseArray = new ArrayList<TransactionResponse>();
-                responseArray.add(this);
-                responsePool.put(proposalID, responseArray);
-                TempResponsePool.setResponsePool(responsePool);
+                System.out.println(responsePool);
                 return;
             }
         }

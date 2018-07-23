@@ -2,13 +2,13 @@ package core.communicationHandler;
 
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
+import com.google.gson.Gson;
 import core.blockchain.*;
 import core.consensus.Consensus;
+//import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class RequestHandler {
         return requestHandler;
     }
 
-    public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
+    public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("********requestHandler*******");
         String messageType = (String)headers.get("messageType");
         System.out.println(messageType);
@@ -55,15 +55,22 @@ public class RequestHandler {
         }
     }
 
-    public void handleTransactionProposalRequest(String data) {
+    public void handleTransactionProposalRequest(String data) throws IOException, InvalidKeySpecException,
+            InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
         System.out.println("handleTransactionProposalRequest");
+        TransactionProposal proposal = this.JSONToProposal(data);
+        proposal.isValid();
     }
 
-    public void handleTransactionProposalResponse(String data) {
+    public void handleTransactionProposalResponse(String data) throws NoSuchAlgorithmException, IOException,
+            SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         System.out.println("handleTransactionProposalResponse");
+        TransactionResponse response = this.JSONToResponse(data);
+        response.addResponse();
     }
 
-    public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+    public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException,
+            NoSuchProviderException, IOException {
         Block requestAgreementBlock = JSONStringToBlock(data);
 
         System.out.println("handleAgreementRequest");
@@ -103,5 +110,16 @@ public class RequestHandler {
         return block;
     }
 
+    public TransactionProposal JSONToProposal(String data) throws IOException {
+        TransactionProposal proposal = new Gson().fromJson(data,TransactionProposal.class);
+
+        return proposal;
+    }
+
+    public TransactionResponse JSONToResponse(String data) throws IOException {
+        TransactionResponse response = new Gson().fromJson(data,TransactionResponse.class);
+
+        return response;
+    }
 
 }
