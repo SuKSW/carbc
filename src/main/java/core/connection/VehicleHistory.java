@@ -3,7 +3,7 @@ package core.connection;
 public class VehicleHistory {
     private String vid;
     private String transaction_id;
-    private String block_id;
+    private int block_id;
     private String block_hash;
     private String event;
     private String sender;
@@ -14,7 +14,7 @@ public class VehicleHistory {
 
     }
 
-    public VehicleHistory(String vid, String transaction_id,String block_id,
+    public VehicleHistory(String vid, String transaction_id,int block_id,
                           String block_hash,String event,String sender,
                           String validation_array,String data){
 
@@ -48,11 +48,11 @@ public class VehicleHistory {
         this.transaction_id = transaction_id;
     }
 
-    public String getBlockId() {
+    public int getBlockId() {
         return block_id;
     }
 
-    public void setBlockId(String block_id) {
+    public void setBlockId(int block_id) {
         this.block_id = block_id;
     }
 

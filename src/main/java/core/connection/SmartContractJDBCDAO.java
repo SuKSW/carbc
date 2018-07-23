@@ -29,7 +29,7 @@ public class SmartContractJDBCDAO {
             ptmt = connection.prepareStatement(queryString);
             ptmt.setString(1, vehicleHistory.getVid());
             ptmt.setString(2, vehicleHistory.getTransactionId());
-            ptmt.setString(3, vehicleHistory.getBlockId());
+            ptmt.setInt(3, vehicleHistory.getBlockId());
             ptmt.setString(4, vehicleHistory.getBlockHash());
             ptmt.setString(5, vehicleHistory.getEvent());
             ptmt.setString(6, vehicleHistory.getSender());

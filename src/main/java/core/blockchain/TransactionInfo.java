@@ -6,6 +6,7 @@ public class TransactionInfo {
     private String smartContractSignature;
     private String smartContractMethod;
     private String[] parameters;
+    private String event;
 
     public int getThreshod() {
         return threshod;
@@ -45,6 +46,14 @@ public class TransactionInfo {
 
     public void setParameters(String[] parameters) {
         this.parameters = parameters;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 
 //

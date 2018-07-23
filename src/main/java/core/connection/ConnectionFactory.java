@@ -6,9 +6,9 @@ import java.sql.Connection;
 
 public class ConnectionFactory {
     String driverClassName = "com.mysql.jdbc.Driver";
-    String connectionUrl = "jdbc:mysql://localhost:3306/CarBC";
-    String dbUser = "root";
-    String dbPwd = "root";
+    String connectionUrl = "jdbc:mysql://localhost:3306/CarBC?verifyServerCertificate=false&useSSL=true";
+    String dbUser = "admin";
+    String dbPwd = "admin123";
 
     private static ConnectionFactory connectionFactory = null;
 
