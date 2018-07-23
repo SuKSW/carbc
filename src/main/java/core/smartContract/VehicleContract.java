@@ -5,12 +5,12 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
-public class VehicleRegistration {
+public class VehicleContract {
 
     public boolean registerVehicle(String [][] validations, String data) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-//        if(!checkValidityOfValidation(validations, data)){
-//            return false;
-//        }
+        if(!checkValidityOfValidation(validations, data)){
+            return false;
+        }
         return true;
     }
 
@@ -22,17 +22,25 @@ public class VehicleRegistration {
         return true;
     }
 
-//    public boolean checkValidityOfValidation(String [][] validations, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-//        for (int i = 0; i<validations.length;i++){
-//            PublicKey pubk = getPublicKey(validations[i][0]);
-//            byte[] signature = validations[i][1].getBytes();
-//
-//            if (!verify(pubk, signature, data)){
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+    public boolean addMaintenanceRecords(){
+        return true;
+    }
+
+    public boolean insureVehicle(){
+        return true;
+    }
+
+    public boolean checkValidityOfValidation(String [][] validations, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        for (int i = 0; i<validations.length;i++){
+            PublicKey pubk = getPublicKey(validations[i][0]);
+            byte[] signature = validations[i][1].getBytes();
+
+            if (!verify(pubk, signature, data)){
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
@@ -57,4 +65,5 @@ public class VehicleRegistration {
         sig.update(data.getBytes(),0,data.getBytes().length);
         return sig.verify(signature);
     }
+
 }
