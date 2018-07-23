@@ -61,9 +61,14 @@ public class Block {
 
 
     public static Block createGenesis(){
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date now = calendar.getTime();
+        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 
-        //BlockHeader blockHeader = new BlockHeader("1",ChainUtil.hexStringToByteArray("Genesis Block"),);
-        return null;
+        BlockHeader blockHeader = new BlockHeader("1","genesis Block",currentTimestamp,"developer",
+                (long)1,true);
+        Block genesisBlock = new Block(blockHeader);
+        return genesisBlock;
     }
 
     public void broadcast(){

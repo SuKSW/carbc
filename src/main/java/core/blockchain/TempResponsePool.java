@@ -25,6 +25,9 @@ public class TempResponsePool {
 
 
     public static HashMap<String, ArrayList<TransactionResponse>> getResponsePool() {
+        if (responsePool==null){
+            responsePool = new HashMap<String, ArrayList<TransactionResponse>>();
+        }
         return responsePool;
     }
 
