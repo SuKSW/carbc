@@ -1,14 +1,26 @@
 package core.communicationHandler;
 
 import chainUtil.ChainUtil;
+<<<<<<< HEAD
 import core.blockchain.*;
+=======
+import chainUtil.KeyGenerator;
+import core.blockchain.Block;
+import core.blockchain.BlockHeader;
+import core.blockchain.Transaction;
+import core.blockchain.TransactionProposal;
+>>>>>>> new changes
 import network.Client.RequestMessage;
 import network.Node;
 import network.Protocol.BlockMessageCreator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 
 public class MessageSender {
 
@@ -43,11 +55,12 @@ public class MessageSender {
         Node.getInstance().sendMessageToNeighbour(neighbourIndex, blockMessage);
     }
 
-    public void sendAgreement(Block block, int neighbourIndex, String agreement, byte[] signature) {
+    public void sendAgreement(Block block, int neighbourIndex, String agreement, byte[] signature) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("block",blockToJSON(block).toString());
         jsonObject.put("agreement",agreement);
         jsonObject.put("signature",ChainUtil.bytesToHex(signature));
+        jsonObject.put("publickey",KeyGenerator.getInstance().getPublicKeyAsString());
         RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(jsonObject);
         blockMessage.addHeader("keepActive", "false");
         blockMessage.addHeader("messageType", "AgreementResponse");

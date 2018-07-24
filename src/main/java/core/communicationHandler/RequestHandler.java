@@ -4,11 +4,12 @@ import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import core.consensus.Consensus;
 import org.json.JSONObject;
 //import com.google.gson.JsonParser;
 import core.blockchain.*;
 //import org.codehaus.jackson.map.ObjectMapper;
-
+import org.json.JSONObject;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -24,6 +25,7 @@ public class RequestHandler {
 
     public static RequestHandler getInstance() {
         if(requestHandler == null) {
+            System.out.println("firsttime");
             requestHandler = new RequestHandler();
         }
         return requestHandler;
@@ -79,20 +81,35 @@ public class RequestHandler {
 
     public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException,
             NoSuchProviderException, IOException {
+       //notify user
+        //add to array
         Block requestAgreementBlock = JSONStringToBlock(data);
-
+//        Consensus.getInstance().responseForBlockAgreement()
         System.out.println("handleAgreementRequest");
+        System.out.println("block received for agreement. Respond");
 
     }
 
-    public void handleAgreementResponse(String data) {
+    public void handleAgreementResponse(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("handleAgreementResponse");
-        System.out.println("############");
-        System.out.println("data is "+data);
+        JSONObject receivedJSONObject = new JSONObject(data);
+        String JSONBlock = (String) receivedJSONObject.get("block");
+        String agreement = (String) receivedJSONObject.get("agreement");
+        String signature = (String) receivedJSONObject.get("signature");
+        String publicKey = (String) receivedJSONObject.get("publickey");
+        Block decodedBLock = JSONStringToBlock(JSONBlock);
+        Consensus.getInstance().handleAgreementResponse(decodedBLock,publicKey,signature,agreement);
     }
 
-    public void handleBroadcastBlock(String data) {
+    public void handleBroadcastBlock(String data) throws NoSuchAlgorithmException {
         System.out.println("handleBroadcastBlock");
+        JSONObject receivedJSONObject = new JSONObject(data);
+        String hashvalue = (String) receivedJSONObject.get("string1");
+        System.out.println("sentValue :"+hashvalue);
+
+        String msg = "secrectmessage";
+        String h1 = ChainUtil.bytesToHex(ChainUtil.getHash(msg));
+        System.out.println("actualValue :"+h1);
 
     }
 

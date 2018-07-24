@@ -26,20 +26,49 @@ public class ChainUtilTest {
             e.getMessage();
         }
 
-        Consensus c = Consensus.getInstance();
-        Consensus c2 = Consensus.getInstance();
-        int hash = Objects.hashCode(c);
-        int hash2 = Objects.hashCode(Blockchain.getBlockchain());
-        System.out.println("*********hashvalue*********");
-        System.out.println(hash);
-        System.out.println(hash2);
         try {
+            PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
+            String publicKeyString = KeyGenerator.getInstance().getEncodedPublicKeyString(publicKey);
             System.out.println("*********signature*********");
             byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),"ashan");
-            System.out.println(ChainUtil.bytesToHex(signature));
-            System.out.println(ChainUtil.bytesToHex(signature).length());
+            String signatureString = ChainUtil.bytesToHex(signature);
             System.out.println("*********verification*********");
-            System.out.println(ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(),signature,Integer.toString(hash)));
+            byte[] convertedSignature = ChainUtil.hexStringToByteArray(signatureString);
+            PublicKey publicKeyConverted = KeyGenerator.getInstance().getPublicKey(publicKeyString);
+            System.out.println(ChainUtil.verify(publicKeyConverted,convertedSignature,"asha2n"));
+
+            System.out.println("byte to hex testing");
+            byte[] signatureRaw = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),"agreed");
+            System.out.println(ChainUtil.bytesToHex(signatureRaw));
+            byte[] signatureRaw2 = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),"agreed");
+            byte[] signatureRaw3 = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),"agreed");
+
+            System.out.println(ChainUtil.bytesToHex(signatureRaw2));
+            System.out.println(ChainUtil.bytesToHex(signatureRaw3));
+
+            String s1 = ChainUtil.bytesToHex(signatureRaw);
+            String s2 = ChainUtil.bytesToHex(signatureRaw2);
+            String s3 = ChainUtil.bytesToHex(signatureRaw3);
+
+            System.out.println("VERIFICATIONS USING CONVERTED SIGNATURES");
+            boolean b1 = ChainUtil.verify(publicKeyConverted,ChainUtil.hexStringToByteArray(s1),"agreed");
+            boolean b2 = ChainUtil.verify(publicKeyConverted,ChainUtil.hexStringToByteArray(s2),"agreed");
+            boolean b3 = ChainUtil.verify(publicKeyConverted,ChainUtil.hexStringToByteArray(s3),"agreed");
+
+            System.out.println(b1);
+            System.out.println(b2);
+            System.out.println(b3);
+
+
+            System.out.println("GET HASH TESTING");
+            String msg = "secrectmessage";
+            String h1 = ChainUtil.bytesToHex(ChainUtil.getHash(msg));
+            String h2 = ChainUtil.bytesToHex(ChainUtil.getHash(msg));
+            String h3 = ChainUtil.bytesToHex(ChainUtil.getHash(msg));
+
+            System.out.println(h1);
+            System.out.println(h2);
+            System.out.println(h3);
         } catch (Exception e) {
             e.getMessage();
         }
