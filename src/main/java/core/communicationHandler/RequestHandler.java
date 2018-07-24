@@ -137,7 +137,7 @@ public class RequestHandler {
         TransactionResponse response = gson.fromJson(String.valueOf(jsonObject.get("transactionResponse")),TransactionResponse.class);
         System.out.println("public key" + response.getValidator().getValidator());
         System.out.println("signature" + response.getSignature());
-        System.out.println("proposal id" + response.getpID());
+        System.out.println("proposal id " + response.getProposalID());
         return response;
     }
 

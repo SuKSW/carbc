@@ -17,7 +17,9 @@ public class TransactionProposal {
     private String sender;
     private ArrayList<Validator> validators;
     private String data;
-    private String pID;
+    private String datas;
+    //private String pID;
+    private String proposalID;
     private Timestamp timestamp;
     private TransactionInfo transactionInfo;
     private Validation validation;
@@ -26,15 +28,19 @@ public class TransactionProposal {
     private static HashMap<String,TransactionProposal> proposals;
 
 
-    public TransactionProposal(String sender, ArrayList<Validator> validators, String data, String pID,
+    public TransactionProposal(String datas, String sender){
+        this.proposalID = datas;
+        this.sender = sender;
+    }
+    public TransactionProposal(String sender, ArrayList<Validator> validators, String data, String proposalID,
                                Timestamp timestamp, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validators = validators;
         this.data = data;
-        this.pID = pID;
-        this.timestamp = timestamp;
+        this.proposalID = proposalID;
+        this.setTimestamp(timestamp);
         this.transactionInfo = transactionInfo;
-        //this.validation = validation;
+
     }
 
 
@@ -50,9 +56,6 @@ public class TransactionProposal {
         return data;
     }
 
-    public String getpID() {
-        return pID;
-    }
 
     public Timestamp getTimestamp() {
         return timestamp;
@@ -62,9 +65,6 @@ public class TransactionProposal {
         return transactionInfo;
     }
 
-    public void setpID(String pID) {
-        this.pID = pID;
-    }
 
     public Validation getValidation() {
         return validation;
@@ -124,7 +124,7 @@ public class TransactionProposal {
     public boolean sendProposal(){
         //save proposal in proposals hashmap
         proposals = TransactionProposal.getProposals();
-        proposals.put(this.pID,this);
+        proposals.put(this.getProposalID(),this);
         for (Validator validator: this.validators){
             String validatorPublicKey = validator.getValidator();
             // create socket connection and send proposal and return true
@@ -136,16 +136,16 @@ public class TransactionProposal {
     public TransactionResponse signProposal() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
 
         System.out.println(TransactionProposal.getProposalString(this));
-            byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getProposalString(this));//signature of the proposal
-        System.out.println("signature" + ChainUtil.bytesToHex(signature));
 
             ArrayList<Validator> validators = this.getValidators();
             for (Validator validator1:validators){
                 System.out.println("validator1" + validator1.getValidator());
                 System.out.println("my public key" + KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()));
                 if (validator1.getValidator().equals(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey())) ){
+                    byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getProposalString(this));//signature of the proposal
+                    System.out.println("signature" + ChainUtil.bytesToHex(signature));
                     Validator  validator = validator1;
-                    TransactionResponse response = new TransactionResponse(this.pID, validator,ChainUtil.bytesToHex(signature));
+                    TransactionResponse response = new TransactionResponse(this.getProposalID(), validator,ChainUtil.bytesToHex(signature));
                     System.out.println(response); //print responseye
                     return response;
                 }else{
@@ -171,7 +171,7 @@ public class TransactionProposal {
 
         }
 
-        Transaction transaction = new Transaction(this.getSender(),validations,this.pID,this.getTransactionInfo());
+        Transaction transaction = new Transaction(this.getSender(),validations, this.getProposalID(),this.getTransactionInfo());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         byte[] hash = ChainUtil.getHash(transaction.toString());
@@ -213,4 +213,21 @@ public class TransactionProposal {
             System.out.println("please enter yes or no");
         }
     }
+
+    public String getDatas() {
+        return datas;
+    }
+
+    public void setDatas(String datas) {
+        this.datas = datas;
+    }
+
+    public String getProposalID() {
+        return proposalID;
+    }
+
+    public void setProposalID(String proposalID) {
+        this.proposalID = proposalID;
+    }
+
 }

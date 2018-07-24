@@ -11,21 +11,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TransactionResponse {
-    private String pID;
+    private String proposalID;
     private Validator validator;
     private String signature;
 
 
-    public TransactionResponse(String pID, Validator validator, String signature) {
-        this.pID = pID;
+    public TransactionResponse(String proposalID, Validator validator, String signature) {
+        this.setProposalID(proposalID);
         this.validator = validator;
         this.signature = signature;
     }
 
 
-    public String getpID() {
-        return pID;
-    }
 
     public Validator getValidator() {
         return validator;
@@ -36,9 +33,6 @@ public class TransactionResponse {
     }
 
 
-    public void setpID(String pID) {
-        this.pID = pID;
-    }
 
     public void setValidator(Validator validator) {
         this.validator = validator;
@@ -54,9 +48,16 @@ public class TransactionResponse {
             SignatureException, InvalidKeySpecException, IOException {
 
 
-        String proposalID = this.getpID();
+        String proposalID = this.getProposalID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
         String proposalString = TransactionProposal.getProposalString(proposal);
+        System.out.println(ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
+                ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString));
+
+        System.out.println("validator public key: " + KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()));
+
+        System.out.println(KeyGenerator.getInstance().getPublicKey());
+
         if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
                 ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
 
@@ -97,7 +98,7 @@ public class TransactionResponse {
                                 }
 
                                 if (mandatorySignCount==mandatorySignCountInProposal){
-                                    Block block = proposal.createBlock(proposal.getpID());
+                                    Block block = proposal.createBlock(proposal.getProposalID());
                                     MessageSender.getInstance().BroadCastBlock(block);
                                     System.out.println(block);
                                 }
@@ -132,7 +133,7 @@ public class TransactionResponse {
                         }
 
                         if (mandatorySignCount==mandatorySignCountInProposal){
-                            Block block = proposal.createBlock(proposal.getpID());
+                            Block block = proposal.createBlock(proposal.getProposalID());
                             MessageSender.getInstance().BroadCastBlock(block);
                             System.out.println(block);
                         }
@@ -143,9 +144,17 @@ public class TransactionResponse {
             }
         }
         else {
-            System.out.println("invalid");
+            System.out.println("TransactionResponse -> add response -> invalid");
             return;
         }
+    }
+
+    public String getProposalID() {
+        return proposalID;
+    }
+
+    public void setProposalID(String proposalID) {
+        this.proposalID = proposalID;
     }
 
 //    @Override
