@@ -1,10 +1,7 @@
 package core.communicationHandler;
 
 import chainUtil.ChainUtil;
-import core.blockchain.Block;
-import core.blockchain.BlockHeader;
-import core.blockchain.Transaction;
-import core.blockchain.TransactionProposal;
+import core.blockchain.*;
 import network.Client.RequestMessage;
 import network.Node;
 import network.Protocol.BlockMessageCreator;
@@ -66,10 +63,10 @@ public class MessageSender {
         Node.getInstance().sendMessageToNeighbour(neighbourIndex, blockMessage);
     }
 
-    public void sendTransactionValidation(TransactionProposal transactionProposal, int neighbourIndex, byte[] signature) {
+    public void sendTransactionValidation(TransactionResponse transactionResponse, int neighbourIndex) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transactionProposal",new JSONObject(transactionProposal).toString());
-        jsonObject.put("signature",ChainUtil.bytesToHex(signature));
+        jsonObject.put("transactionResponse",new JSONObject(transactionResponse).toString());
+        //jsonObject.put("signature",ChainUtil.bytesToHex(signature));
         RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(jsonObject);
         blockMessage.addHeader("keepActive", "false");
         blockMessage.addHeader("messageType", "TransactionValidation");

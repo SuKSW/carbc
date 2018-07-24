@@ -11,8 +11,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TransactionProposalTest {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
@@ -23,6 +25,7 @@ public class TransactionProposalTest {
         //validators.add(validator2);
         Calendar calendar = Calendar.getInstance();
         java.util.Date now = calendar.getTime();
+
         java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 
         TransactionInfo transactionInfo = new TransactionInfo();

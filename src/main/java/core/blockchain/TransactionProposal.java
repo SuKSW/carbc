@@ -27,7 +27,8 @@ public class TransactionProposal {
     private static HashMap<String,TransactionProposal> proposals;
 
 
-    public TransactionProposal(String sender, ArrayList<Validator> validators, String data, String proposalID, Timestamp timestamp, TransactionInfo transactionInfo) {
+    public TransactionProposal(String sender, ArrayList<Validator> validators, String data, String proposalID,
+                               Timestamp timestamp, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validators = validators;
         this.data = data;
@@ -141,13 +142,15 @@ public class TransactionProposal {
 
             ArrayList<Validator> validators = this.getValidators();
             for (Validator validator1:validators){
+                System.out.println("validator1" + validator1.getValidator());
+                System.out.println("my public key" + KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()));
                 if (validator1.getValidator().equals(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey())) ){
                     Validator  validator = validator1;
                     TransactionResponse response = new TransactionResponse(this.proposalID, validator,ChainUtil.bytesToHex(signature));
                     System.out.println(response); //print responseye
                     return response;
                 }else{
-                    System.out.println("not correct validator");
+                    System.out.println("Transaction response -> sign proposal -> not correct validator");
                 }
             }
        return null;
@@ -199,8 +202,7 @@ public class TransactionProposal {
             if (response!=null){
                 //connection and send
                 //sendResponse();
-                MessageSender.getInstance().sendTransactionValidation(this,1,
-                        ChainUtil.hexStringToByteArray(response.getSignature()));  //should send transaction response not proposal
+                MessageSender.getInstance().sendTransactionValidation(response,1);  //should send transaction response not proposal
                 System.out.println(response);
                 System.out.println("sending response");
             }
