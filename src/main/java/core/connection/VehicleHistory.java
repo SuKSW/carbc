@@ -9,6 +9,9 @@ public class VehicleHistory {
     private String sender;
     private String validation_array;
     private String data;
+    String smartContractSignature;
+    String smartContractMethod;
+    String parameters;
 
     public VehicleHistory(){
 

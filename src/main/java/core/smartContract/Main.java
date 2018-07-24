@@ -95,25 +95,28 @@ public class Main {
 
 
     public static void executeTransaction(Block block){
+        //getting block details
         BlockHeader blockHeader = block.getHeader();
         int blockNumber = (int)blockHeader.getBlockNumber();
         String blockHash = blockHeader.getHash();
 
+        //getting transaction details
         Transaction transaction = block.getTransaction();
 
+        String transactionID = transaction.getTransactionID();
         String sender = transaction.getSender();
         ArrayList<Validation> validation = transaction.getValidations();
-        String transactionID = transaction.getTransactionID();
         TransactionInfo transactionInfo = transaction.getTransactionInfo();
 
+        //getting transactionInfo
         String smartContractSignature = transactionInfo.getSmartContractSignature();
         String smartContractMethod = transactionInfo.getSmartContractMethod();
         Object[] parameters = transactionInfo.getParameters();
         String event = transactionInfo.getEvent();
         String data = transactionInfo.getData();
 
+        //making validation array
         int noOfValidators = validation.size();
-
         String validationArray[][] = new String[1][noOfValidators];
         for (int i=0; i<noOfValidators; i++){
             Validation validations = validation.get(i);
