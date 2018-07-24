@@ -6,9 +6,7 @@ import core.connection.DatabaseClassLoader;
 import core.connection.SmartContractJDBCDAO;
 import core.connection.VehicleHistory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,7 +75,24 @@ public class Main {
         }
     }
 
-//    public static void
+    public static String getFileContent(FileInputStream fis) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        Reader r = new InputStreamReader(fis, "UTF-8");  //or whatever encoding
+        int ch = r.read();
+        while(ch >= 0) {
+            sb.append(ch);
+            ch = r.read();
+        }
+        return sb.toString();
+    }
+
+    public static String readCodeFromFile(String fileLocation) throws IOException {
+        File file = new File(fileLocation);
+        FileInputStream input = new FileInputStream(file);
+        String contractCode = getFileContent(input);
+        return contractCode;
+    }
+
 
     public static void executeTransaction(Block block){
         BlockHeader blockHeader = block.getHeader();
