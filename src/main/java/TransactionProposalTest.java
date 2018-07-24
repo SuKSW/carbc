@@ -1,4 +1,3 @@
-import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
 import core.blockchain.*;
@@ -11,10 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class TransactionProposalTest {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
@@ -45,7 +42,7 @@ public class TransactionProposalTest {
         System.out.println("response in json form: " + pro);
 
         TransactionProposal response1 = new Gson().fromJson(pro,TransactionProposal.class);
-        System.out.println(response1.getProposalID());
+        System.out.println(response1.getpID());
         System.out.println("converted from string response: " + new JSONObject(response1).toString() );
 //        response.addResponse();
 //
