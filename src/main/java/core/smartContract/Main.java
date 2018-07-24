@@ -108,7 +108,7 @@ public class Main {
 
         String smartContractSignature = transactionInfo.getSmartContractSignature();
         String smartContractMethod = transactionInfo.getSmartContractMethod();
-        String[] parameters = transactionInfo.getParameters();
+        Object[] parameters = transactionInfo.getParameters();
         String event = transactionInfo.getEvent();
         String data = transactionInfo.getData();
 

@@ -4,12 +4,9 @@ import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import org.json.JSONArray;
 import org.json.JSONObject;
 //import com.google.gson.JsonParser;
 import core.blockchain.*;
-import core.consensus.Consensus;
 //import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -140,7 +137,7 @@ public class RequestHandler {
         TransactionResponse response = gson.fromJson(String.valueOf(jsonObject.get("transactionResponse")),TransactionResponse.class);
         System.out.println("public key" + response.getValidator().getValidator());
         System.out.println("signature" + response.getSignature());
-        System.out.println("proposal id" + response.getProposalID());
+        System.out.println("proposal id " + response.getProposalID());
         return response;
     }
 

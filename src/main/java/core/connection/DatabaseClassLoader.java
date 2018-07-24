@@ -1,6 +1,6 @@
 package core.connection;
 
-import com.sun.org.apache.xml.internal.serialize.Method;
+//import com.sun.org.apache.xml.internal.serialize.Method;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;

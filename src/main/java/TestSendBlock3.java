@@ -15,36 +15,36 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class TestSendBlock2 {
+public class TestSendBlock3 {
     public static void main(String[] args) throws FileUtilityException {
         System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "INFO");
 
         /*
-        * Set the main directory as home
-        * */
+         * Set the main directory as home
+         * */
         System.setProperty(Constants.CARBC_HOME, System.getProperty("user.dir"));
 
         /*
-        * At the very beginning
-        * A Config common to all: network, blockchain, etc.
-        * */
+         * At the very beginning
+         * A Config common to all: network, blockchain, etc.
+         * */
         CommonConfigHolder commonConfigHolder = CommonConfigHolder.getInstance();
         commonConfigHolder.setConfigUsingResource("peer2");
 
         /*
-        * when initializing the network
-        * */
+         * when initializing the network
+         * */
         Node node = Node.getInstance();
         node.init();
 
         /*
-        * when we want our node to start listening
-        * */
+         * when we want our node to start listening
+         * */
         node.startListening();
 
         /*
-        * when we want to send a block
-        * */
+         * when we want to send a block
+         * */
 //        JSONObject ourBlock = new JSONObject();
 //        JSONObject ourBlock1 = new JSONObject();
 //        ourBlock1.put("firstName", "Ashan");
@@ -77,7 +77,7 @@ public class TestSendBlock2 {
             JSONObject jsonObject = new JSONObject(block);
             String myJson = jsonObject.toString();
             System.out.println(myJson);
-          //  MessageSender.getInstance().requestAgreement(block,1);
+            //  MessageSender.getInstance().requestAgreement(block,1);
 
             Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner",true,3);
             Validator validator4 = new Validator("v2","seller",true,4);
@@ -87,14 +87,27 @@ public class TestSendBlock2 {
             Calendar calendar = Calendar.getInstance();
             java.util.Date now = calendar.getTime();
 
-            java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+            //java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+            Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
+            Object[] parameters = new Object[2];
+            parameters[0] = "para1";
+            parameters[1] = 5;
 
             TransactionInfo transactionInfo = new TransactionInfo();
+            transactionInfo.setEvent("registration");
+            transactionInfo.setSmartContractSignature("aaaaa");
+            transactionInfo.setSmartContractMethod("registerVehicle");
+            transactionInfo.setData("bbbbb");
+            transactionInfo.setParameters(parameters);
 
             TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
                     "data","proposal1",null,transactionInfo);
 
+            System.out.println(new JSONObject(proposal).toString());
+
             proposal.sendProposal();
+
+
 
         } catch (Exception e) {
             e.getMessage();

@@ -11,21 +11,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TransactionResponse {
-    private String ProposalID;
+    private String proposalID;
     private Validator validator;
     private String signature;
 
 
     public TransactionResponse(String proposalID, Validator validator, String signature) {
-        ProposalID = proposalID;
+        this.setProposalID(proposalID);
         this.validator = validator;
         this.signature = signature;
     }
 
 
-    public String getProposalID() {
-        return ProposalID;
-    }
 
     public Validator getValidator() {
         return validator;
@@ -36,9 +33,6 @@ public class TransactionResponse {
     }
 
 
-    public void setProposalID(String proposalID) {
-        ProposalID = proposalID;
-    }
 
     public void setValidator(Validator validator) {
         this.validator = validator;
@@ -57,6 +51,13 @@ public class TransactionResponse {
         String proposalID = this.getProposalID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
         String proposalString = TransactionProposal.getProposalString(proposal);
+        System.out.println(ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
+                ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString));
+
+        System.out.println("validator public key: " + KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()));
+
+        System.out.println(KeyGenerator.getInstance().getPublicKey());
+
         if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
                 ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
 
@@ -143,14 +144,22 @@ public class TransactionResponse {
             }
         }
         else {
-            System.out.println("invalid");
+            System.out.println("TransactionResponse -> add response -> invalid");
             return;
         }
     }
 
+    public String getProposalID() {
+        return proposalID;
+    }
+
+    public void setProposalID(String proposalID) {
+        this.proposalID = proposalID;
+    }
+
 //    @Override
 //    public String toString(){
-//        return "'ProposalID:'" + this.ProposalID +"'Validator:'" + this.validator + "'Signatute'" + ChainUtil.bytesToHex(this.signature);
+//        return "'pID:'" + this.pID +"'Validator:'" + this.validator + "'Signatute'" + ChainUtil.bytesToHex(this.signature);
 //    }
 
 }

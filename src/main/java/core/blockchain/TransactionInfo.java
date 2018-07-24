@@ -5,7 +5,7 @@ public class TransactionInfo {
     private String smartContractId;
     private String smartContractSignature;
     private String smartContractMethod;
-    private String[] parameters;
+    private Object[] parameters;
     private String event;
     private String data;
 
@@ -27,7 +27,7 @@ public class TransactionInfo {
         return smartContractMethod;
     }
 
-    public String[] getParameters() {
+    public Object[] getParameters() {
         return parameters;
     }
 
@@ -47,7 +47,7 @@ public class TransactionInfo {
         this.smartContractMethod = smartContractMethod;
     }
 
-    public void setParameters(String[] parameters) {
+    public void setParameters(Object[] parameters) {
         this.parameters = parameters;
     }
 
