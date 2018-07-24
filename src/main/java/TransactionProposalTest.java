@@ -42,7 +42,7 @@ public class TransactionProposalTest {
         System.out.println("response in json form: " + pro);
 
         TransactionProposal response1 = new Gson().fromJson(pro,TransactionProposal.class);
-        System.out.println(response1.getProposalID());
+        System.out.println(response1.getpID());
         System.out.println("converted from string response: " + new JSONObject(response1).toString() );
 //        response.addResponse();
 //
