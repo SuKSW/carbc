@@ -9,6 +9,7 @@ public class VehicleHistory {
     private String sender;
     private String validation_array;
     private String data;
+    private String smartContractName;
     private String smartContractSignature;
     private String smartContractMethod;
     private Object[] parameters;
@@ -19,8 +20,9 @@ public class VehicleHistory {
 
     public VehicleHistory(String vid, String transaction_id,int block_id,
                           String block_hash,String event,String sender,
-                          String validation_array,String data, String smartContractSignature,
-                          String smartContractMethod, Object[] parameters){
+                          String validation_array,String data, String smartContractName,
+                          String smartContractSignature, String smartContractMethod,
+                          Object[] parameters){
 
         this.setVid(vid);
         this.setTransactionId(transaction_id);
@@ -30,6 +32,7 @@ public class VehicleHistory {
         this.setSender(sender);
         this.setValidationArray(validation_array);
         this.setData(data);
+        this.setSmartContractName(smartContractName);
         this.setSmartContractSignature(smartContractSignature);
         this.setSmartContractMethod(smartContractMethod);
         this.setParameters(parameters);
@@ -125,5 +128,13 @@ public class VehicleHistory {
 
     public void setParameters(Object[] parameters) {
         this.parameters = parameters;
+    }
+
+    public String getSmartContractName() {
+        return smartContractName;
+    }
+
+    public void setSmartContractName(String smartContractName) {
+        this.smartContractName = smartContractName;
     }
 }

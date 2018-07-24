@@ -28,7 +28,14 @@ public class DatabaseClassLoader extends ClassLoader{
                 paramTypes[i] = parameters[i].getClass();
             }
             Object contract = beanClass.newInstance();
-            java.lang.reflect.Method method = contract.getClass().getMethod(contractName, paramTypes);
+
+//            System.out.println("method = " + contractName);
+            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership");
+//            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership", paramTypes);
+            method.invoke(contract);
+//            method.invoke(contract, parameters);
+
+//            java.lang.reflect.Method method = contract.getClass().getMethod(contractName, paramTypes);
             method.invoke(contract, parameters);
 
         } catch (InstantiationException e) {
