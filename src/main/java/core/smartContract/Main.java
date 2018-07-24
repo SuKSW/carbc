@@ -103,7 +103,6 @@ public class Main {
 
         String sender = transaction.getSender();
         ArrayList<Validation> validation = transaction.getValidations();
-        String data = transaction.getData();
         String transactionID = transaction.getTransactionID();
         TransactionInfo transactionInfo = transaction.getTransactionInfo();
 
@@ -111,6 +110,7 @@ public class Main {
         String smartContractMethod = transactionInfo.getSmartContractMethod();
         String[] parameters = transactionInfo.getParameters();
         String event = transactionInfo.getEvent();
+        String data = transactionInfo.getData();
 
         int noOfValidators = validation.size();
 
