@@ -114,7 +114,7 @@ public class RequestHandler {
         validations.add(new Validation(validator2,"3442"));
         BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
                 "senderPubkey",123,true);
-        Transaction transaction = new Transaction("senderpubkey",validations,"1456",
+        Transaction transaction = new Transaction("senderpubkey",validations,
                 "tran1",new TransactionInfo());
 
         Block block = new Block(blockHeader,transaction);

@@ -172,7 +172,7 @@ public class TransactionProposal {
 
         }
 
-        Transaction transaction = new Transaction(this.getSender(),validations,this.data,this.proposalID,this.getTransactionInfo());
+        Transaction transaction = new Transaction(this.getSender(),validations,this.proposalID,this.getTransactionInfo());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         byte[] hash = ChainUtil.getHash(transaction.toString());

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class Transaction {
     private String sender;
     private ArrayList<Validation> validations;
-
     private String transactionID;
     private TransactionInfo transactionInfo; //sell, insure, repair, register & etc
 
