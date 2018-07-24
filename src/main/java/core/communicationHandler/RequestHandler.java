@@ -3,6 +3,11 @@ package core.communicationHandler;
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
+//import com.google.gson.JsonParser;
 import core.blockchain.*;
 import core.consensus.Consensus;
 //import org.codehaus.jackson.map.ObjectMapper;
@@ -32,19 +37,23 @@ public class RequestHandler {
         String messageType = (String)headers.get("messageType");
         System.out.println(messageType);
         switch (messageType) {
-            case "TransactionProposalRequest":
+            case "TransactionProposal":
+                System.out.println("TransactionProposalRequest");
                 handleTransactionProposalRequest(data);
                 break;
 
-            case "TransactionProposalResponse":
+            case "TransactionValidation":
+                System.out.println("TransactionProposalResponse");
                 handleTransactionProposalResponse(data);
                 break;
 
             case "AgreementRequest":
+                System.out.println("AgreementRequest");
                 handleAgreementRequest(data);
                 break;
 
             case "AgreementResponse":
+                System.out.println("AgreementResponse");
                 handleAgreementResponse(data);
                 break;
 
@@ -59,11 +68,13 @@ public class RequestHandler {
             InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
         System.out.println("handleTransactionProposalRequest");
         TransactionProposal proposal = this.JSONToProposal(data);
+        System.out.println(proposal.getValidators());
         proposal.isValid();
     }
 
     public void handleTransactionProposalResponse(String data) throws NoSuchAlgorithmException, IOException,
             SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+        System.out.println(data);
         System.out.println("handleTransactionProposalResponse");
         TransactionResponse response = this.JSONToResponse(data);
         response.addResponse();
@@ -111,14 +122,25 @@ public class RequestHandler {
     }
 
     public TransactionProposal JSONToProposal(String data) throws IOException {
-        TransactionProposal proposal = new Gson().fromJson(data,TransactionProposal.class);
+
+        JSONObject jsonObject = new JSONObject(data);
+
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        TransactionProposal proposal = gson.fromJson(String.valueOf(jsonObject.get("transactionProposal")),TransactionProposal.class);
 
         return proposal;
     }
 
     public TransactionResponse JSONToResponse(String data) throws IOException {
-        TransactionResponse response = new Gson().fromJson(data,TransactionResponse.class);
+        JSONObject jsonObject = new JSONObject(data);
 
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        System.out.println(jsonObject.get("transactionResponse"));
+        TransactionResponse response = gson.fromJson(String.valueOf(jsonObject.get("transactionResponse")),TransactionResponse.class);
+        System.out.println("public key" + response.getValidator().getValidator());
+        System.out.println("signature" + response.getSignature());
+        System.out.println("proposal id" + response.getProposalID());
         return response;
     }
 

@@ -13,6 +13,7 @@ import org.slf4j.impl.SimpleLogger;
 import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TestSendBlock2 {
     public static void main(String[] args) throws FileUtilityException {
@@ -76,7 +77,24 @@ public class TestSendBlock2 {
             JSONObject jsonObject = new JSONObject(block);
             String myJson = jsonObject.toString();
             System.out.println(myJson);
-            MessageSender.getInstance().requestAgreement(block,1);
+          //  MessageSender.getInstance().requestAgreement(block,1);
+
+            Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner",true,3);
+            Validator validator4 = new Validator("v2","seller",true,4);
+            ArrayList<Validator> validators = new ArrayList<>();
+            validators.add(validator3);
+            //validators.add(validator2);
+            Calendar calendar = Calendar.getInstance();
+            java.util.Date now = calendar.getTime();
+
+            java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+
+            TransactionInfo transactionInfo = new TransactionInfo();
+
+            TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
+                    "data","proposal1",null,transactionInfo);
+
+            proposal.sendProposal();
 
         } catch (Exception e) {
             e.getMessage();
