@@ -25,7 +25,10 @@ public class DatabaseClassLoader extends ClassLoader{
         try {
             Object contract = beanClass.newInstance();
             java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership");
+//            java.lang.reflect.Method methods = contract.getClass().getMethod;
             method.invoke(contract);
+//            Object[] o = {contract, para};
+//            method.invoke(o);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
