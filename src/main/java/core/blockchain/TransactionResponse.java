@@ -11,20 +11,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TransactionResponse {
-    private String ProposalID;
+    private String pID;
     private Validator validator;
     private String signature;
 
 
-    public TransactionResponse(String proposalID, Validator validator, String signature) {
-        ProposalID = proposalID;
+    public TransactionResponse(String pID, Validator validator, String signature) {
+        this.pID = pID;
         this.validator = validator;
         this.signature = signature;
     }
 
 
-    public String getProposalID() {
-        return ProposalID;
+    public String getpID() {
+        return pID;
     }
 
     public Validator getValidator() {
@@ -36,8 +36,8 @@ public class TransactionResponse {
     }
 
 
-    public void setProposalID(String proposalID) {
-        ProposalID = proposalID;
+    public void setpID(String pID) {
+        this.pID = pID;
     }
 
     public void setValidator(Validator validator) {
@@ -54,7 +54,7 @@ public class TransactionResponse {
             SignatureException, InvalidKeySpecException, IOException {
 
 
-        String proposalID = this.getProposalID();
+        String proposalID = this.getpID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
         String proposalString = TransactionProposal.getProposalString(proposal);
         if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
@@ -97,7 +97,7 @@ public class TransactionResponse {
                                 }
 
                                 if (mandatorySignCount==mandatorySignCountInProposal){
-                                    Block block = proposal.createBlock(proposal.getProposalID());
+                                    Block block = proposal.createBlock(proposal.getpID());
                                     MessageSender.getInstance().BroadCastBlock(block);
                                     System.out.println(block);
                                 }
@@ -132,7 +132,7 @@ public class TransactionResponse {
                         }
 
                         if (mandatorySignCount==mandatorySignCountInProposal){
-                            Block block = proposal.createBlock(proposal.getProposalID());
+                            Block block = proposal.createBlock(proposal.getpID());
                             MessageSender.getInstance().BroadCastBlock(block);
                             System.out.println(block);
                         }
@@ -150,7 +150,7 @@ public class TransactionResponse {
 
 //    @Override
 //    public String toString(){
-//        return "'ProposalID:'" + this.ProposalID +"'Validator:'" + this.validator + "'Signatute'" + ChainUtil.bytesToHex(this.signature);
+//        return "'pID:'" + this.pID +"'Validator:'" + this.validator + "'Signatute'" + ChainUtil.bytesToHex(this.signature);
 //    }
 
 }
