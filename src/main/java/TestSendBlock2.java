@@ -120,7 +120,7 @@ public class TestSendBlock2 {
 //            System.out.println(ourBlock1.toString());
 //            node.sendMessageToNeighbour(1, blockMessage);
 //            Consensus.getInstance().requestAgreementForBlock(block);
-//            System.out.println("collector size: "+Consensus.getInstance().agreementCollectors.size());
+            System.out.println("collector size: "+Consensus.getInstance().agreementCollectors.size());
 //            Consensus.getInstance().requestAgreementForBlock(block);
             MessageSender.getInstance().BroadCastBlock(block);
         } catch (Exception e) {

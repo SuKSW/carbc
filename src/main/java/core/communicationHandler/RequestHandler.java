@@ -25,7 +25,6 @@ public class RequestHandler {
 
     public static RequestHandler getInstance() {
         if(requestHandler == null) {
-            System.out.println("firsttime");
             requestHandler = new RequestHandler();
         }
         return requestHandler;
@@ -34,7 +33,7 @@ public class RequestHandler {
     public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("********requestHandler*******");
         String messageType = (String)headers.get("messageType");
-        System.out.println(messageType);
+//        System.out.println(messageType);
         switch (messageType) {
             case "TransactionProposal":
                 System.out.println("TransactionProposalRequest");
@@ -81,8 +80,8 @@ public class RequestHandler {
 
     public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException,
             NoSuchProviderException, IOException {
-       //notify user
-        //add to array
+       //notify user, get command line argument, if positive sendAgreement
+        // add to array
         Block requestAgreementBlock = JSONStringToBlock(data);
 //        Consensus.getInstance().responseForBlockAgreement()
         System.out.println("handleAgreementRequest");
@@ -101,37 +100,37 @@ public class RequestHandler {
         Consensus.getInstance().handleAgreementResponse(decodedBLock,publicKey,signature,agreement);
     }
 
-    public void handleBroadcastBlock(String data) throws NoSuchAlgorithmException {
+    public void handleBroadcastBlock(String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
         System.out.println("handleBroadcastBlock");
         JSONObject receivedJSONObject = new JSONObject(data);
-        String hashvalue = (String) receivedJSONObject.get("string1");
-        System.out.println("sentValue :"+hashvalue);
-
-        String msg = "secrectmessage";
-        String h1 = ChainUtil.bytesToHex(ChainUtil.getHash(msg));
-        System.out.println("actualValue :"+h1);
-
+        String JSONBlock = (String) receivedJSONObject.get("block");
+        Block decodedBLock = JSONStringToBlock(JSONBlock);
+        Consensus.getInstance().blockHandler(decodedBLock);
     }
 
     public Block JSONStringToBlock(String JSONblock) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
-        byte[] prevhash = ChainUtil.hexStringToByteArray("1234");
-        byte[] hash = ChainUtil.hexStringToByteArray("5678");
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        byte[] data = ChainUtil.hexStringToByteArray("1456");
-        byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
-        byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
-        PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
-        Validator validator1 = new Validator("val1pubkey","owner",true,3);
-        Validator validator2 = new Validator("val2pubkey","seller",true,4);
-        ArrayList<Validation> validations = new ArrayList<>();
-        validations.add(new Validation(validator1,"3332"));
-        validations.add(new Validation(validator2,"3442"));
-        BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
-                "senderPubkey",123,true);
-        Transaction transaction = new Transaction("senderpubkey",validations,
-                "tran1",new TransactionInfo());
+//        byte[] prevhash = ChainUtil.hexStringToByteArray("1234");
+//        byte[] hash = ChainUtil.hexStringToByteArray("5678");
+//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//        byte[] data = ChainUtil.hexStringToByteArray("1456");
+//        byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
+//        byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
+//        PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
+//        Validator validator1 = new Validator("val1pubkey","owner",true,3);
+//        Validator validator2 = new Validator("val2pubkey","seller",true,4);
+//        ArrayList<Validation> validations = new ArrayList<>();
+//        validations.add(new Validation(validator1,"3332"));
+//        validations.add(new Validation(validator2,"3442"));
+//        BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
+//                "senderPubkey",123,true);
+//        Transaction transaction = new Transaction("senderpubkey",validations,
+//                "tran1",new TransactionInfo());
 
-        Block block = new Block(blockHeader,transaction);
+//        Block block = new Block(blockHeader,transaction);
+        JSONObject jsonObject = new JSONObject(JSONblock);
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Block block = gson.fromJson(JSONblock,Block.class);
+
         return block;
     }
 

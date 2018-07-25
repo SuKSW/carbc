@@ -1,15 +1,13 @@
 package core.communicationHandler;
 
 import chainUtil.ChainUtil;
-<<<<<<< HEAD
+import com.google.gson.Gson;
 import core.blockchain.*;
-=======
 import chainUtil.KeyGenerator;
 import core.blockchain.Block;
 import core.blockchain.BlockHeader;
 import core.blockchain.Transaction;
 import core.blockchain.TransactionProposal;
->>>>>>> new changes
 import network.Client.RequestMessage;
 import network.Node;
 import network.Protocol.BlockMessageCreator;
@@ -37,11 +35,11 @@ public class MessageSender {
 
     public void BroadCastBlock(Block block) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("block",blockToJSON(block).toString());
+        jsonObject.put("block",blockToJSON(block));
         RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(jsonObject);
         blockMessage.addHeader("keepActive", "false");
         blockMessage.addHeader("messageType", "BlockBroadcast");
-        for(int i = 1; i< 3; i++) {
+        for(int i = 1; i< 2; i++) {
             Node.getInstance().sendMessageToNeighbour(i, blockMessage);
         }
     }
@@ -86,12 +84,13 @@ public class MessageSender {
         Node.getInstance().sendMessageToNeighbour(neighbourIndex, blockMessage);
     }
 
-    public JSONObject blockToJSON(Block block) {
-        return new JSONObject(block);
+    public String blockToJSON(Block block) {
+        Gson gson = new Gson();
+        return gson.toJson(block);
     }
 
-    public JSONObject transactionToJSON(Transaction transaction) {
-        return new JSONObject(transaction);
-
+    public String transactionToJSON(Transaction transaction) {
+        Gson gson = new Gson();
+        return gson.toJson(transaction);
     }
 }
