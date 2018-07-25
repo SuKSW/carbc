@@ -18,12 +18,14 @@ import java.util.ArrayList;
 public class Consensus {
 
     private static Consensus consensus;
-    ArrayList<AgreementCollector> agreementCollectors;
+    public ArrayList<AgreementCollector> agreementCollectors;
     ArrayList<Transaction> agreedTransactiions;
+    ArrayList<Block> agreementRequestBlocks;
 
     private Consensus() {
         agreedTransactiions = new ArrayList<>();
         agreementCollectors = new ArrayList<>();
+        agreementRequestBlocks = new ArrayList<>();
     }
 
     public static Consensus getInstance() {
@@ -34,12 +36,13 @@ public class Consensus {
     }
 
 
-    public boolean requestAgreementForBlock(Block block) {
+    public boolean requestAgreementForBlock(Block block) throws NoSuchAlgorithmException {
+        addToAgreementCollectors(block);
         ArrayList<String> validators = new ArrayList<>();
-       // Validation[] validations = block.getTransaction().getValidations(); //changed
         ArrayList<Validation> validations = block.getTransaction().getValidations();
         for(Validation validation: validations) {
             validators.add(validation.getValidator().getValidator());
+            MessageSender.getInstance().requestAgreement(block,1);
         }
 
         //send the block to validators in the validators array for agreements
@@ -47,7 +50,7 @@ public class Consensus {
     }
 
     public boolean responseForBlockAgreement(Block block, String agreed, int neighbourIndex) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        if(agreedTransaction(block.getTransaction())) {
+        if(checkAgreementForBlock(block)) {
             sendAgreementForBlock(block,agreed,neighbourIndex);
             return true;
         }
@@ -58,37 +61,82 @@ public class Consensus {
             InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         MessageSender.getInstance().sendAgreement(block,1,agreed,
                 ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),agreed));
+        //remove from agreementRequestBlocks array
         return true;
     }
 
     public boolean checkAgreementForBlock (Block block) {
+        System.out.println("inside check agreement");
+        String transID = block.getTransaction().getTransactionID();
 
-        if(agreedTransactiions.contains(block.getTransaction())){ //changed
-            return true;
+        for(Transaction transaction: agreedTransactiions) {
+            System.out.println("tra id: "+ transaction.getTransactionID());
+            if(transaction.getTransactionID().equals(transID)) {
+                System.out.println("transaction found");
+                return true;
+            }
         }
         return false;
     }
 
     public boolean agreedTransaction(Transaction transaction) {
+        System.out.println("here");
+        System.out.println(agreedTransactiions.contains(transaction));
         if (!agreedTransactiions.contains(transaction)) {
             agreedTransactiions.add(transaction);
+            System.out.println("Agreed Transaction added, id: "+transaction.getTransactionID());
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean addAgreedNodeForBlock(Block block, PublicKey agreedNode) throws NoSuchAlgorithmException {
-        boolean status = getAgreementCollectorByBlock(block).addAgreedNode(agreedNode);
-        if(status) {
-            checkForEligibilty(block);
-            return true;
+    public void addRequestAgreementBlock(Block block) {
+        agreementRequestBlocks.add(block);
+        System.out.println("added to agreementRequestBlocks array");
+    }
+
+    public boolean handleAgreementResponse(Block block, String agreedNodePublicKey, String signatureString, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        PublicKey agreedNode = KeyGenerator.getInstance().getPublicKey(agreedNodePublicKey);
+        byte[] signature = ChainUtil.hexStringToByteArray(signatureString);
+        boolean verfied = ChainUtil.verify(agreedNode,signature,data);
+        if(verfied) {
+            System.out.println("response verified");
+            boolean status = addAgreedNodeForBlock(block,agreedNodePublicKey);
+            if(status) {
+                System.out.println("agreedNOde added successfully");
+                return true;
+            }
         }
         return false;
     }
 
+    public boolean addAgreedNodeForBlock(Block block, String agreedNodePublicKey) throws NoSuchAlgorithmException {
+        System.out.println("here");
+        if(getAgreementCollectorByBlock(block) == null){
+
+            System.out.println(block.getHeader().getBlockNumber());
+            System.out.println("null value");
+        }
+            if(getAgreementCollectorByBlock(block) != null) {
+            boolean status = getAgreementCollectorByBlock(block).addAgreedNode(agreedNodePublicKey);
+            if(status) {
+                checkForEligibilty(block);
+                System.out.println("agreement added successfully ");
+                return true;
+            }else{
+                System.out.println("agreement not added");
+                return false;
+            }
+        }else{
+            System.out.println("no Agreement collector found");
+            return false;
+        }
+
+    }
+
     public AgreementCollector getAgreementCollectorByBlock(Block block) throws NoSuchAlgorithmException {
-        String id = AgreementCollector.generateAgreementCollectorId(block);
+        long id = AgreementCollector.generateAgreementCollectorId(block);
         for(int i = 0; i< agreementCollectors.size(); i++) {
             if(agreementCollectors.get(i).getId() == id) {
                 return agreementCollectors.get(i);
@@ -98,11 +146,13 @@ public class Consensus {
     }
 
     public boolean insertBlock(Block block) {
+        System.out.println("inside insert block");
         long receivedBlockNumber = block.getHeader().getBlockNumber();
         Timestamp receivedBlockTimestamp = block.getHeader().getTimestamp();
 
         if (!blockExistence(block)) {
             Blockchain.getBlockchain().addBlock(block);
+            System.out.println("block added successfully");
             return true;
         } else {
             Block existBlock = Blockchain.getBlockchain().getBlockByNumber(receivedBlockNumber);
@@ -110,6 +160,7 @@ public class Consensus {
             if (existBlock.getHeader().getTimestamp().after(receivedBlockTimestamp)) {
                 Blockchain.getBlockchain().rollBack(receivedBlockNumber);
                 Blockchain.getBlockchain().addBlock(block);
+                System.out.println("block added successfully");
                 return true;
             } else if (existBlock.getHeader().getTimestamp() == receivedBlockTimestamp) {
                 Blockchain.getBlockchain().rollBack(receivedBlockNumber);
@@ -126,8 +177,8 @@ public class Consensus {
         return false;
     }
 
-    public void BlockHandler(Block block) {
-        if(agreedTransaction(block.getTransaction())) {
+    public void blockHandler(Block block) throws NoSuchAlgorithmException {
+        if(checkAgreementForBlock(block)) {
             System.out.println("Agreed block");
             insertBlock(block);
         }else {
@@ -143,6 +194,13 @@ public class Consensus {
             System.out.println("Agreements received upto threshold level");
             insertBlock(block);
         }
+    }
+
+    public boolean addToAgreementCollectors(Block block) throws NoSuchAlgorithmException {
+        AgreementCollector agreementCollector = new AgreementCollector(block);
+        System.out.println("agreement collector added");
+        System.out.println("agreemenCollector id: "+agreementCollector.getId());
+        return  agreementCollectors.add(agreementCollector);
     }
 
 }

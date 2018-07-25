@@ -5,17 +5,19 @@ import config.CommonConfigHolder;
 import constants.Constants;
 import core.blockchain.*;
 import core.communicationHandler.MessageSender;
+import core.consensus.AgreementCollector;
+import core.consensus.Consensus;
 import network.Client.RequestMessage;
 import network.Node;
 import network.Protocol.BlockMessageCreator;
 import org.json.JSONObject;
 import org.slf4j.impl.SimpleLogger;
+
 import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class TestSendBlock3 {
+public class TestSendBlock4 {
     public static void main(String[] args) throws FileUtilityException {
         System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "INFO");
 
@@ -70,47 +72,57 @@ public class TestSendBlock3 {
             validations.add(new Validation(validator2,"3442"));
             BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
                     "senderPubkey",123,true);
-            Transaction transaction = new Transaction("senderpubkey",validations,
-                    "tran1",new TransactionInfo());
+            Transaction transaction = new Transaction("senderpubkey",validations,"1456",
+                    new TransactionInfo());
 
             Block block = new Block(blockHeader,transaction);
             JSONObject jsonObject = new JSONObject(block);
             String myJson = jsonObject.toString();
-            System.out.println(myJson);
-            //  MessageSender.getInstance().requestAgreement(block,1);
 
-            Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner","true",3);
-            Validator validator4 = new Validator("v2","seller","true",4);
-            ArrayList<Validator> validators = new ArrayList<>();
-            validators.add(validator3);
-            //validators.add(validator2);
-            Calendar calendar = Calendar.getInstance();
-            java.util.Date now = calendar.getTime();
+            String agreement = "agreed";
+            byte[] signatureRaw = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),agreement);
+            String signature = ChainUtil.bytesToHex(ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(),agreement));
+            JSONObject test = new JSONObject();
+            test.put("block",jsonObject.toString());
+            test.put("agreement",agreement);
+            test.put("signature",signature);
+            String testString = test.toString();
 
-            //java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-            Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
-            Object[] parameters = new Object[2];
-            parameters[0] = "para1";
-            parameters[1] = "5";
+            JSONObject convertedTest = new JSONObject(testString);
+//            System.out.println(convertedTest.get("block"));
+//            System.out.println("testString");
+//            System.out.println(testString);
+//            System.out.println(myJson);
 
-            TransactionInfo transactionInfo = new TransactionInfo();
-            transactionInfo.setEvent("registration");
-            transactionInfo.setSmartContractSignature("aaaaa");
-            transactionInfo.setSmartContractMethod("registerVehicle");
-            transactionInfo.setData("bbbbb");
-            transactionInfo.setParameters(parameters);
+            JSONObject receivedJSONObject = new JSONObject(testString);
+            String jblock = (String)receivedJSONObject.get("block");
+//            System.out.println("++++++++++++++++");
+            JSONObject receivedJSONObject1 = new JSONObject(jblock);
+//            System.out.println(receivedJSONObject1.toString());
 
-            TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
-                    "data","proposal1",null,transactionInfo);
+            System.out.println("agreement collector id:");
+            System.out.println(AgreementCollector.generateAgreementCollectorId(block));
+//            Consensus.getInstance().addToAgreementCollectors(block);
 
+//            Consensus.getInstance().requestAgreementForBlock(block);
 
+//            MessageSender.getInstance().requestAgreement(block,1);
+//            MessageSender.getInstance().sendAgreement(block,1,agreement,signatureRaw);
+            String msg = "secrectmessage";
+            String h1 = ChainUtil.bytesToHex(ChainUtil.getHash(msg));
+//            System.out.println("generated hash: "+h1);
 
-            System.out.println(new JSONObject(proposal).toString());
-
-            proposal.sendProposal();
-
-
-
+            JSONObject ourBlock1 = new JSONObject();
+            ourBlock1.put("string1",h1);
+            RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(ourBlock1);
+            blockMessage.addHeader("keepActive", "false");
+            blockMessage.addHeader("messageType", "BlockBroadcast");
+//            System.out.println("sending block");
+//            System.out.println(ourBlock1.toString());
+//            node.sendMessageToNeighbour(1, blockMessage);
+//            Consensus.getInstance().requestAgreementForBlock(block);
+//            Consensus.getInstance().requestAgreementForBlock(block);
+//            MessageSender.getInstance().BroadCastBlock(block);
         } catch (Exception e) {
             e.getMessage();
         }

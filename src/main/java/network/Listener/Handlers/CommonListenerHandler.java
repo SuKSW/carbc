@@ -28,7 +28,6 @@ public class CommonListenerHandler extends ChannelInboundHandlerAdapter {
             Map<String, String> headers = requestMessage.readHeaders(); //TODO: Inspect headers
             String data = requestMessage.readData();
 //            Handler.getInstance().handle(data, headers);
-            System.out.println("request passed to handler");
             RequestHandler.getInstance().handleRequest(headers,data);
             //-------------------------------------------
             // call the workflow methods here after checking the headers

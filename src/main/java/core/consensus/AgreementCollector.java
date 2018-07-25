@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class AgreementCollector {
 
-    String id;
+    long id;
     Block block;
-    ArrayList<PublicKey> agreedNodes;
+    ArrayList<String> agreedNodes;
 
     public AgreementCollector(Block block) throws NoSuchAlgorithmException {
         id = generateAgreementCollectorId(block);
@@ -23,7 +23,7 @@ public class AgreementCollector {
         return block;
     }
 
-    public boolean addAgreedNode(PublicKey agreedNode) {
+    public boolean addAgreedNode(String agreedNode) {
         if(!agreedNodes.contains(agreedNode)){
             agreedNodes.add(agreedNode);
             return true;
@@ -32,15 +32,15 @@ public class AgreementCollector {
         }
     }
 
-    public ArrayList<PublicKey> getAgreedNodes() {
+    public ArrayList<String> getAgreedNodes() {
         return agreedNodes;
     }
 
-    public static String generateAgreementCollectorId(Block block) throws NoSuchAlgorithmException {
-        return ChainUtil.getBlockHashString(block)+ block.getHeader().getBlockNumber();
+    public static long generateAgreementCollectorId(Block block) throws NoSuchAlgorithmException {
+        return block.getHeader().getBlockNumber();
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 

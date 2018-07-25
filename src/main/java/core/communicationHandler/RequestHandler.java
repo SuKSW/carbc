@@ -4,11 +4,12 @@ import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import core.consensus.Consensus;
 import org.json.JSONObject;
 //import com.google.gson.JsonParser;
 import core.blockchain.*;
 //import org.codehaus.jackson.map.ObjectMapper;
-
+import org.json.JSONObject;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -32,7 +33,7 @@ public class RequestHandler {
     public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("********requestHandler*******");
         String messageType = (String)headers.get("messageType");
-        System.out.println(messageType);
+//        System.out.println(messageType);
         switch (messageType) {
             case "TransactionProposal":
                 System.out.println("TransactionProposalRequest");
@@ -74,47 +75,63 @@ public class RequestHandler {
         System.out.println(data);
         System.out.println("handleTransactionProposalResponse");
         TransactionResponse response = this.JSONToResponse(data);
+        System.out.println("signature in response: "+response.getSignature());
         response.addResponse();
     }
 
     public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException,
             NoSuchProviderException, IOException {
+       //notify user, get command line argument, if positive sendAgreement
+        // add to array
         Block requestAgreementBlock = JSONStringToBlock(data);
-
+//        Consensus.getInstance().responseForBlockAgreement()
         System.out.println("handleAgreementRequest");
+        System.out.println("block received for agreement. Respond");
 
     }
 
-    public void handleAgreementResponse(String data) {
+    public void handleAgreementResponse(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("handleAgreementResponse");
-        System.out.println("############");
-        System.out.println("data is "+data);
+        JSONObject receivedJSONObject = new JSONObject(data);
+        String JSONBlock = (String) receivedJSONObject.get("block");
+        String agreement = (String) receivedJSONObject.get("agreement");
+        String signature = (String) receivedJSONObject.get("signature");
+        String publicKey = (String) receivedJSONObject.get("publickey");
+        Block decodedBLock = JSONStringToBlock(JSONBlock);
+        Consensus.getInstance().handleAgreementResponse(decodedBLock,publicKey,signature,agreement);
     }
 
-    public void handleBroadcastBlock(String data) {
+    public void handleBroadcastBlock(String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
         System.out.println("handleBroadcastBlock");
-
+        JSONObject receivedJSONObject = new JSONObject(data);
+        String JSONBlock = (String) receivedJSONObject.get("block");
+        Block decodedBLock = JSONStringToBlock(JSONBlock);
+        Consensus.getInstance().blockHandler(decodedBLock);
     }
 
     public Block JSONStringToBlock(String JSONblock) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
-        byte[] prevhash = ChainUtil.hexStringToByteArray("1234");
-        byte[] hash = ChainUtil.hexStringToByteArray("5678");
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        byte[] data = ChainUtil.hexStringToByteArray("1456");
-        byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
-        byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
-        PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
-        Validator validator1 = new Validator("val1pubkey","owner",true,3);
-        Validator validator2 = new Validator("val2pubkey","seller",true,4);
-        ArrayList<Validation> validations = new ArrayList<>();
-        validations.add(new Validation(validator1,"3332"));
-        validations.add(new Validation(validator2,"3442"));
-        BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
-                "senderPubkey",123,true);
-        Transaction transaction = new Transaction("senderpubkey",validations,
-                "tran1",new TransactionInfo());
+//        byte[] prevhash = ChainUtil.hexStringToByteArray("1234");
+//        byte[] hash = ChainUtil.hexStringToByteArray("5678");
+//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//        byte[] data = ChainUtil.hexStringToByteArray("1456");
+//        byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
+//        byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
+//        PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
+//        Validator validator1 = new Validator("val1pubkey","owner",true,3);
+//        Validator validator2 = new Validator("val2pubkey","seller",true,4);
+//        ArrayList<Validation> validations = new ArrayList<>();
+//        validations.add(new Validation(validator1,"3332"));
+//        validations.add(new Validation(validator2,"3442"));
+//        BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
+//                "senderPubkey",123,true);
+//        Transaction transaction = new Transaction("senderpubkey",validations,
+//                "tran1",new TransactionInfo());
 
-        Block block = new Block(blockHeader,transaction);
+//        Block block = new Block(blockHeader,transaction);
+        JSONObject jsonObject = new JSONObject(JSONblock);
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Block block = gson.fromJson(JSONblock,Block.class);
+
         return block;
     }
 
