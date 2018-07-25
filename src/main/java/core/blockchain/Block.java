@@ -28,10 +28,6 @@ public class Block {
 //    private PublicKey signer;
 //    private long blockNumber;
 //    private boolean isApproved;
-    public Block(String version, String previousHash, Timestamp timestamp, String signer, long blockNumber, boolean isAprrroved, Transaction transaction){
-        BlockHeader blockHeader = new BlockHeader(version,previousHash,timestamp,signer,blockNumber,false);
-        new Block(blockHeader,transaction);
-    }
 
 
     public Block(BlockHeader genesisHeader){
@@ -64,8 +60,9 @@ public class Block {
         Calendar calendar = Calendar.getInstance();
         java.util.Date now = calendar.getTime();
         java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+        String currentTimestampString = String.valueOf(currentTimestamp);
 
-        BlockHeader blockHeader = new BlockHeader("1","genesis Block",currentTimestamp,"developer",
+        BlockHeader blockHeader = new BlockHeader("1","genesis Block",currentTimestampString,"developer",
                 (long)1,true);
         Block genesisBlock = new Block(blockHeader);
         return genesisBlock;

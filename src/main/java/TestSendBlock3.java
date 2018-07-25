@@ -68,7 +68,7 @@ public class TestSendBlock3 {
             ArrayList<Validation> validations = new ArrayList<>();
             validations.add(new Validation(validator1,"3332"));
             validations.add(new Validation(validator2,"3442"));
-            BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
+            BlockHeader blockHeader = new BlockHeader("101","1234","",
                     "senderPubkey",123,true);
             Transaction transaction = new Transaction("senderpubkey",validations,
                     "tran1",new TransactionInfo());
@@ -101,7 +101,7 @@ public class TestSendBlock3 {
             transactionInfo.setParameters(parameters);
 
             TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
-                    "data","proposal1",null,transactionInfo);
+                    "data","proposal1",String.valueOf(timestamp1),transactionInfo);
 
 
 

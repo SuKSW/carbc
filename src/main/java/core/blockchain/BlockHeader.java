@@ -1,13 +1,10 @@
 package core.blockchain;
 
-import java.security.PublicKey;
-import java.sql.Timestamp;
-
 public class BlockHeader {
     private String version;
     private String previoushash;
     private String hash;
-    private Timestamp timestamp;
+    private String timestamp;
     //private int txCount;
     private String signer;
     private long blockNumber;
@@ -17,10 +14,10 @@ public class BlockHeader {
     //constructor
 
 
-    public BlockHeader(String version, String previoushash, Timestamp timestamp, String signer, long blockNumber, boolean isApproved) {
+    public BlockHeader(String version, String previoushash, String timestamp, String signer, long blockNumber, boolean isApproved) {
         this.version = version;
         this.previoushash = previoushash;
-        this.timestamp = timestamp;
+        this.setTimestamp(timestamp);
         this.signer = signer;
         this.blockNumber = blockNumber;
         this.isApproved = false;
@@ -39,9 +36,7 @@ public class BlockHeader {
         return previoushash;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
+
 
     public String getSigner() {
         return signer;
@@ -70,9 +65,6 @@ public class BlockHeader {
         this.previoushash = previoushash;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
 
     public void setSigner(String signer) {
         this.signer = signer;
@@ -88,5 +80,13 @@ public class BlockHeader {
 
     public void setApproved(boolean approved) {
         isApproved = approved;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
     }
 }

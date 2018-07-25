@@ -4,12 +4,14 @@ import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
 import core.communicationHandler.MessageSender;
+import core.consensus.Consensus;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.*;
 import java.sql.Timestamp;
 import java.security.spec.InvalidKeySpecException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -21,7 +23,7 @@ public class TransactionProposal {
     private String datas;
     //private String pID;
     private String proposalID;
-    private Timestamp timestamp;
+    private String timestamp;
     private TransactionInfo transactionInfo;
     private Validation validation;
 
@@ -34,7 +36,7 @@ public class TransactionProposal {
         this.sender = sender;
     }
     public TransactionProposal(String sender, ArrayList<Validator> validators, String data, String proposalID,
-                               Timestamp timestamp, TransactionInfo transactionInfo) {
+                               String timestamp, TransactionInfo transactionInfo) {
         this.sender = sender;
         this.validators = validators;
         this.data = data;
@@ -58,10 +60,6 @@ public class TransactionProposal {
     }
 
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
     public TransactionInfo getTransactionInfo() {
         return transactionInfo;
     }
@@ -83,9 +81,7 @@ public class TransactionProposal {
         this.data = data;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
+
 
     public void setTransactionInfo(TransactionInfo transactionInfo) {
         this.transactionInfo = transactionInfo;
@@ -184,8 +180,9 @@ public class TransactionProposal {
         Transaction transaction = new Transaction(this.getSender(),validations, this.getProposalID(),this.getTransactionInfo());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String timestampString = String.valueOf(timestamp);
         byte[] hash = ChainUtil.getHash(transaction.toString());
-        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchain().getBlockchainArray().getLast().getHeader().getHash(),timestamp,this.sender,Blockchain.getBlockchain().getBlockchainArray().size()+1,true);
+        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchain().getBlockchainArray().getLast().getHeader().getHash(),timestampString,this.sender,Blockchain.getBlockchain().getBlockchainArray().size()+1,true);
 
         Block block = new Block(blockHeader,transaction);
         //convert to string
@@ -212,7 +209,7 @@ public class TransactionProposal {
             if (response!=null){
                 //connection and send
                 //sendResponse();
-
+                Consensus.getInstance().agreedTransaction(this.proposalID);
                 MessageSender.getInstance().sendTransactionValidation(response,1);  //should send transaction response not proposal
                 System.out.println(response);
                 System.out.println("sending response");
@@ -243,4 +240,11 @@ public class TransactionProposal {
         this.proposalID = proposalID;
     }
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 }
