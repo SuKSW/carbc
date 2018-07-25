@@ -19,20 +19,35 @@ public class DatabaseClassLoader extends ClassLoader{
         super();
     }
 
-    public boolean findClass(byte[] code, String contractName, Object[] parameters) {
+    public boolean findClass(String signedData, String[][] validations, byte[] code, String contractName, Object[] parameters) {
 //        byte[] data = findContract();
+//        Object success = null;
         Class<?> beanClass = defineClass(contractName, code, 0, code.length);
         try {
-            Class<?>[] paramTypes = new Class[parameters.length];
+            Class<?>[] paramTypes = new Class[parameters.length+2];
+            Object[] parameterArray = new Object[parameters.length + 2];
+
             for (int i = 0; i<parameters.length; i++){
                 paramTypes[i] = parameters[i].getClass();
+                parameterArray[i] = parameters[i];
             }
+            paramTypes[parameters.length] = String[][].class;
+            paramTypes[parameters.length + 1] = signedData.getClass();
+
+            parameterArray[parameters.length] = validations;
+            parameterArray[parameters.length + 1] = signedData;
+
+//            parameters[parameters.length] = validations;
+//            parameters[parameters.length + 1] = signedData;
+
             Object contract = beanClass.newInstance();
 //            System.out.println("method = " + contractName);
-            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership");
-//            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership", paramTypes);
-            method.invoke(contract);
-//            method.invoke(contract, parameters);
+
+//            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership");
+            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership", String[][].class, String.class);
+
+//            method.invoke(contract);
+            method.invoke(contract, validations, signedData);
 
 //            java.lang.reflect.Method method = contract.getClass().getMethod(contractName, paramTypes);
 
