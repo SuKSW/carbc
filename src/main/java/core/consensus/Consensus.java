@@ -19,7 +19,7 @@ public class Consensus {
 
     private static Consensus consensus;
     public ArrayList<AgreementCollector> agreementCollectors;
-    ArrayList<Transaction> agreedTransactiions;
+    ArrayList<String> agreedTransactiions;
     ArrayList<Block> agreementRequestBlocks;
 
     private Consensus() {
@@ -69,9 +69,8 @@ public class Consensus {
         System.out.println("inside check agreement");
         String transID = block.getTransaction().getTransactionID();
 
-        for(Transaction transaction: agreedTransactiions) {
-            System.out.println("tra id: "+ transaction.getTransactionID());
-            if(transaction.getTransactionID().equals(transID)) {
+        for(String transactionId: agreedTransactiions) {
+            if(transactionId.equals(transID)) {
                 System.out.println("transaction found");
                 return true;
             }
@@ -83,7 +82,7 @@ public class Consensus {
         System.out.println("here");
         System.out.println(agreedTransactiions.contains(transaction));
         if (!agreedTransactiions.contains(transaction)) {
-            agreedTransactiions.add(transaction);
+            agreedTransactiions.add(transaction.getTransactionID());
             System.out.println("Agreed Transaction added, id: "+transaction.getTransactionID());
             return true;
         } else {
