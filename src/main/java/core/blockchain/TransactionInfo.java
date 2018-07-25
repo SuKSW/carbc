@@ -2,12 +2,13 @@ package core.blockchain;
 
 public class TransactionInfo {
     private int threshod;
-    private String smartContractId;
+    private String smartContractName;
     private String smartContractSignature;
     private String smartContractMethod;
     private Object[] parameters;
     private String event;
     private String data;
+    private String vehicleId;
 
 
 
@@ -15,8 +16,8 @@ public class TransactionInfo {
         return threshod;
     }
 
-    public String getSmartContractId() {
-        return smartContractId;
+    public String getSmartContractName() {
+        return smartContractName;
     }
 
     public String getSmartContractSignature() {
@@ -35,8 +36,8 @@ public class TransactionInfo {
         this.threshod = threshod;
     }
 
-    public void setSmartContractId(String smartContractId) {
-        this.smartContractId = smartContractId;
+    public void setSmartContractName(String smartContractName) {
+        this.smartContractName = smartContractName;
     }
 
     public void setSmartContractSignature(String smartContractSignature) {
@@ -65,6 +66,14 @@ public class TransactionInfo {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
 //
