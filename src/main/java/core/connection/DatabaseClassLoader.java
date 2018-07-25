@@ -19,16 +19,18 @@ public class DatabaseClassLoader extends ClassLoader{
         super();
     }
 
-    public Class findClass(String name) {
-        byte[] data = findContract();
-        Class<?> beanClass = defineClass(name, data, 0, data.length);
+    public boolean findClass(byte[] code, String contractName, Object[] parameters) {
+//        byte[] data = findContract();
+        Class<?> beanClass = defineClass(contractName, code, 0, code.length);
         try {
+            Class<?>[] paramTypes = new Class[parameters.length];
+            for (int i = 0; i<parameters.length; i++){
+                paramTypes[i] = parameters[i].getClass();
+            }
             Object contract = beanClass.newInstance();
-            java.lang.reflect.Method method = contract.getClass().getMethod("changeOwnership");
-//            java.lang.reflect.Method methods = contract.getClass().getMethod;
-            method.invoke(contract);
-//            Object[] o = {contract, para};
-//            method.invoke(o);
+            java.lang.reflect.Method method = contract.getClass().getMethod(contractName, paramTypes);
+            method.invoke(contract, parameters);
+
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -38,8 +40,7 @@ public class DatabaseClassLoader extends ClassLoader{
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-
-        return beanClass;
+        return true;
     }
 //    private byte[] loadDataFromDatabase(String name) {
 //        // this is your job.
@@ -81,8 +82,8 @@ public class DatabaseClassLoader extends ClassLoader{
             ptmt = connection.prepareStatement(queryString);
             resultSet = ptmt.executeQuery();
 
-            File file = new File("class.bin");
-            FileOutputStream outputStream = new FileOutputStream(file);
+//            File file = new File("class.bin");
+//            FileOutputStream outputStream = new FileOutputStream(file);
 
             if (resultSet.next()){
                 InputStream results = resultSet.getBinaryStream("code");
@@ -90,10 +91,6 @@ public class DatabaseClassLoader extends ClassLoader{
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
