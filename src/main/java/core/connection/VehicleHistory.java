@@ -9,6 +9,10 @@ public class VehicleHistory {
     private String sender;
     private String validation_array;
     private String data;
+    private String smartContractName;
+    private String smartContractSignature;
+    private String smartContractMethod;
+    private Object[] parameters;
 
     public VehicleHistory(){
 
@@ -16,7 +20,9 @@ public class VehicleHistory {
 
     public VehicleHistory(String vid, String transaction_id,int block_id,
                           String block_hash,String event,String sender,
-                          String validation_array,String data){
+                          String validation_array,String data, String smartContractName,
+                          String smartContractSignature, String smartContractMethod,
+                          Object[] parameters) {
 
         this.setVid(vid);
         this.setTransactionId(transaction_id);
@@ -26,6 +32,10 @@ public class VehicleHistory {
         this.setSender(sender);
         this.setValidationArray(validation_array);
         this.setData(data);
+        this.setSmartContractName(smartContractName);
+        this.setSmartContractSignature(smartContractSignature);
+        this.setSmartContractMethod(smartContractMethod);
+        this.setParameters(parameters);
 
     }
 
@@ -95,4 +105,37 @@ public class VehicleHistory {
     public void setData(String data) {
         this.data = data;
     }
+
+    public String getSmartContractSignature() {
+        return smartContractSignature;
+    }
+
+    public void setSmartContractSignature(String smartContractSignature) {
+        this.smartContractSignature = smartContractSignature;
+    }
+
+    public String getSmartContractMethod() {
+        return smartContractMethod;
+    }
+
+    public void setSmartContractMethod(String smartContractMethod) {
+        this.smartContractMethod = smartContractMethod;
+    }
+
+    public Object[] getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Object[] parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getSmartContractName() {
+        return smartContractName;
+    }
+
+    public void setSmartContractName(String smartContractName) {
+        this.smartContractName = smartContractName;
+    }
+
 }

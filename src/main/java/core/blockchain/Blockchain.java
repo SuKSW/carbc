@@ -1,5 +1,9 @@
 package core.blockchain;
 
+import core.smartContract.Main;
+
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.LinkedList;
 
 public class Blockchain {
@@ -22,8 +26,11 @@ public class Blockchain {
         return blockchainArray;
     }
 
-    public void addBlock(Block block){
+    public void addBlock(Block block) throws SQLException, ParseException {
         this.blockchainArray.add(block);
+        Main main = new Main();
+//        Main.main(new String[2]);
+        main.executeTransaction(block);
     }
 
 

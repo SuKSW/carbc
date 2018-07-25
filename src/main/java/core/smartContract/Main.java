@@ -1,27 +1,39 @@
 package core.smartContract;
 
 import core.blockchain.*;
-import core.connection.ConnectionFactory;
-import core.connection.DatabaseClassLoader;
-import core.connection.SmartContractJDBCDAO;
-import core.connection.VehicleHistory;
+import core.connection.*;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Map;
 
 public class Main {
 
 
+    //    public static void main(String[] args) throws Exception {
+//        Connection connection = null;
+//        PreparedStatement ptmt = null;
+//        ResultSet resultSet = null;
+//
+//        add(connection, ptmt);
+//
+////        DatabaseClassLoader databaseClassLoader = new DatabaseClassLoader();
+////        Class<?> cl = databaseClassLoader.findClass("VehicleRegistration");
+//
+//    }
     public static void main(String[] args) throws Exception {
 
 //        TransactionDummy tr = new TransactionDummy();
 //        tr.executeSmartContractMethod();
 
-//        SmartContractJDBCDAO smartContractJDBCDAO = new SmartContractJDBCDAO();
+//        VehicleHistoryJDBCDAO smartContractJDBCDAO = new VehicleHistoryJDBCDAO();
 //        VehicleHistory vehicleHistory = new VehicleHistory("a","a","a","a","a","a","a","a");
 //
 //        smartContractJDBCDAO.add(vehicleHistory);
@@ -32,31 +44,38 @@ public class Main {
         PreparedStatement ptmt = null;
         ResultSet resultSet = null;
 
-//        add(connection, ptmt);
+        add(connection, ptmt);
 
-        DatabaseClassLoader databaseClassLoader = new DatabaseClassLoader();
-        Class<?> cl = databaseClassLoader.findClass("VehicleRegistration");
+//        DatabaseClassLoader databaseClassLoader = new DatabaseClassLoader();
+//        Class<?> cl = databaseClassLoader.findClass("VehicleRegistration");
 
     }
 
 
     public static void add(Connection connection, PreparedStatement ptmt) throws FileNotFoundException {
 
-        File file = new File("/home/sajinie/Desktop/VehicleRegistration.class");
+        File file = new File("/home/sajinie/Desktop/VehicleContract.class");
         FileInputStream input = new FileInputStream(file);
 
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date now = calendar.getTime();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
         try {
-            String queryString = "INSERT INTO `SmartContract`(`signature`, `code`, " +
-                    "`owner`, `message`, `block_number`, `block_timestamp`) VALUES(?,?,?,?,?,?)";
+            String queryString = "INSERT INTO `SmartContract`(`signature`,`contractName`, `code`, " +
+                    "`owner`, `message`, `block_number`, `block_timestamp`, `block_hash`, `vehicleId`) VALUES(?,?,?,?,?,?,?,?,?)";
 
             connection = ConnectionFactory.getInstance().getConnection();
             ptmt = connection.prepareStatement(queryString);
             ptmt.setString(1, "sa");
-            ptmt.setBinaryStream(2, input);
-            ptmt.setString(3, "sa");
+            ptmt.setString(2, "sa");
+            ptmt.setBinaryStream(3, input);
             ptmt.setString(4, "sa");
-            ptmt.setInt(5, 3);
-            ptmt.setString(6, "dss");
+            ptmt.setString(5, "sa");
+            ptmt.setInt(6, 3);
+            ptmt.setTimestamp(7, timestamp);
+            ptmt.setString(8, "aaa");
+            ptmt.setString(9, "sa");
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {
@@ -93,40 +112,109 @@ public class Main {
         return contractCode;
     }
 
+    public static InputStream getContractInputStream(String contract){
+        InputStream stream = new ByteArrayInputStream(contract.getBytes(StandardCharsets.UTF_8));
+        return stream;
+    }
 
-    public static void executeTransaction(Block block){
+    public void executeTransaction(Block block) throws SQLException, ParseException {
+        //getting block details
         BlockHeader blockHeader = block.getHeader();
         int blockNumber = (int)blockHeader.getBlockNumber();
         String blockHash = blockHeader.getHash();
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date parsedDate = dateFormat.parse(blockHeader.getTimestamp());
+        Timestamp blockTimestamp = new java.sql.Timestamp(parsedDate.getTime());
+
+        //getting transaction details
         Transaction transaction = block.getTransaction();
 
+        String transactionID = transaction.getTransactionID();
         String sender = transaction.getSender();
         ArrayList<Validation> validation = transaction.getValidations();
-        String transactionID = transaction.getTransactionID();
         TransactionInfo transactionInfo = transaction.getTransactionInfo();
 
+        //getting transactionInfo
+        String smartContractName = transactionInfo.getSmartContractName();
         String smartContractSignature = transactionInfo.getSmartContractSignature();
         String smartContractMethod = transactionInfo.getSmartContractMethod();
         Object[] parameters = transactionInfo.getParameters();
         String event = transactionInfo.getEvent();
         String data = transactionInfo.getData();
+        String vehicleID = transactionInfo.getVehicleId();
 
+        //making validation array
         int noOfValidators = validation.size();
-
-        String validationArray[][] = new String[1][noOfValidators];
+        String validationArray[][] = new String[noOfValidators][2];
         for (int i=0; i<noOfValidators; i++){
+
+
             Validation validations = validation.get(i);
             validationArray[i][0] = validations.getValidator().getValidator();
             validationArray[i][1] = validations.getSignature().toString();
         }
 
+        boolean isSuccess = false;
+        if (event.equals("deployContract")){
+            isSuccess = deploySmartContract(smartContractSignature, smartContractName, data,
+                    sender, data, blockNumber, blockTimestamp, blockHash);
+        }else{
+            VehicleHistoryJDBCDAO vehicleHistoryJDBCDAO = new VehicleHistoryJDBCDAO();
+            VehicleHistory vehicleHistory = new VehicleHistory(vehicleID, transactionID,
+                    blockNumber, blockHash, event, sender, validationArray.toString(), data, smartContractName,
+                    smartContractSignature, smartContractMethod, parameters);
+
+//            System.out.println("other event = " + event);
+            isSuccess = addVehicleRecord(vehicleHistoryJDBCDAO, vehicleHistory);
+            if(isSuccess){
+                vehicleHistoryJDBCDAO.add(vehicleHistory);
+            }
+
+        }
+
+    }
+
+    public boolean addVehicleRecord(VehicleHistoryJDBCDAO vehicleHistoryJDBCDAO, VehicleHistory vehicleHistory) throws SQLException {
+        //find contract
         SmartContractJDBCDAO smartContractJDBCDAO = new SmartContractJDBCDAO();
-        VehicleHistory vehicleHistory = new VehicleHistory("a",transactionID,
-                blockNumber,blockHash,event,sender,validationArray.toString(),data);
+        Map contract = smartContractJDBCDAO.getSmartContract(vehicleHistory.getSmartContractSignature());
 
-        smartContractJDBCDAO.add(vehicleHistory);
 
+        //find vehicle
+        ResultSet resultSet = vehicleHistoryJDBCDAO.findVehicle(vehicleHistory);
+        DatabaseClassLoader databaseClassLoader = new DatabaseClassLoader();
+
+        if(vehicleHistory.getEvent().equals("vehicleRegistration")){
+            //check possibility
+            if (resultSet.next()){
+                return false;
+            }
+            String vID = vehicleHistory.getTransactionId() + vehicleHistory.getBlockHash();
+            vehicleHistory.setVid(vID);
+            vehicleHistoryJDBCDAO.add(vehicleHistory);
+        }else{
+            boolean success = databaseClassLoader.findClass((byte[])contract.get("code"),
+                    (String)contract.get("contractName"), vehicleHistory.getParameters());
+        }
+        return true;
+    }
+
+
+    public boolean deploySmartContract(String signature, String contractName, String code,
+                                       String owner, String message, int block_number,
+                                       Timestamp block_timestamp, String block_hash){
+
+        SmartContractJDBCDAO smartContractJDBCDAO = new SmartContractJDBCDAO();
+        SmartContract smartContract = new SmartContract(signature, contractName, code,
+                owner, message, block_number, block_timestamp, block_hash);
+
+        boolean contractExists = smartContractJDBCDAO.findDuplicates(smartContract);
+        if (!contractExists){
+            smartContractJDBCDAO.add(smartContract);
+            return true;
+        }
+        return false;
     }
 
 }

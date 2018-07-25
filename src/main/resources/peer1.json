@@ -1,14 +1,14 @@
 {
   "peer_name": "peer1",
-  "listener_port": 49222,
+  "listener_port": 49211,
   "neighbours": [
     {
       "ip": "127.0.0.1",
-      "port": 49222
+      "port": 49211
     },
     {
       "ip": "127.0.0.1",
-      "port": 49154
+      "port": 49222
     },
     {
       "ip": "127.0.0.1",

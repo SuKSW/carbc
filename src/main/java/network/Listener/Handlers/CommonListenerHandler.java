@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class CommonListenerHandler extends ChannelInboundHandlerAdapter {
     private final Logger log = LoggerFactory.getLogger(CommonListenerHandler.class);
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException, SQLException {
         if(msg instanceof RequestMessage){
             RequestMessage requestMessage = (RequestMessage) msg;
             Map<String, String> headers = requestMessage.readHeaders(); //TODO: Inspect headers
