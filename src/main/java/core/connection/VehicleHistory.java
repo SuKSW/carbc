@@ -22,7 +22,7 @@ public class VehicleHistory {
                           String block_hash,String event,String sender,
                           String validation_array,String data, String smartContractName,
                           String smartContractSignature, String smartContractMethod,
-                          Object[] parameters){
+                          Object[] parameters) {
 
         this.setVid(vid);
         this.setTransactionId(transaction_id);
@@ -137,4 +137,5 @@ public class VehicleHistory {
     public void setSmartContractName(String smartContractName) {
         this.smartContractName = smartContractName;
     }
+
 }
