@@ -101,6 +101,7 @@ public class TransactionResponse {
 
                                 if (mandatorySignCount==mandatorySignCountInProposal){
                                     Block block = proposal.createBlock(proposal.getProposalID());
+                                    Blockchain.getBlockchain().getBlockchainArray().add(block);
                                     MessageSender.getInstance().BroadCastBlock(block);
                                     System.out.println(block);
                                 }
@@ -136,6 +137,7 @@ public class TransactionResponse {
 
                         if (mandatorySignCount==mandatorySignCountInProposal){
                             Block block = proposal.createBlock(proposal.getProposalID());
+                            Blockchain.getBlockchain().getBlockchainArray().add(block);
                             MessageSender.getInstance().BroadCastBlock(block);
                             System.out.println(block);
                         }
