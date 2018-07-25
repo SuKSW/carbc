@@ -64,8 +64,8 @@ public class TestSendBlock2 {
             byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
             byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
             PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
-            Validator validator1 = new Validator("val1pubkey","owner",true,3);
-            Validator validator2 = new Validator("val2pubkey","seller",true,4);
+            Validator validator1 = new Validator("val1pubkey","owner","true",3);
+            Validator validator2 = new Validator("val2pubkey","seller","true",4);
             ArrayList<Validation> validations = new ArrayList<>();
             validations.add(new Validation(validator1,"3332"));
             validations.add(new Validation(validator2,"3442"));

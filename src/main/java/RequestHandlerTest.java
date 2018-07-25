@@ -13,8 +13,8 @@ public class RequestHandlerTest {
         try {
             //block creation
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            Validator validator1 = new Validator("val1pubkey", "owner", true, 3);
-            Validator validator2 = new Validator("val2pubkey", "seller", true, 4);
+            Validator validator1 = new Validator("val1pubkey", "owner", "true", 3);
+            Validator validator2 = new Validator("val2pubkey", "seller", "true", 4);
             ArrayList<Validation> validations = new ArrayList<>();
             validations.add(new Validation(validator1, "3332"));
             validations.add(new Validation(validator2, "3442"));

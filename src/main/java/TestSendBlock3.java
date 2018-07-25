@@ -63,8 +63,8 @@ public class TestSendBlock3 {
             byte[] signatue1 = ChainUtil.hexStringToByteArray("3332");
             byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
             PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
-            Validator validator1 = new Validator("val1pubkey","owner",true,3);
-            Validator validator2 = new Validator("val2pubkey","seller",true,4);
+            Validator validator1 = new Validator("val1pubkey","owner","true",3);
+            Validator validator2 = new Validator("val2pubkey","seller","true",4);
             ArrayList<Validation> validations = new ArrayList<>();
             validations.add(new Validation(validator1,"3332"));
             validations.add(new Validation(validator2,"3442"));
@@ -79,8 +79,8 @@ public class TestSendBlock3 {
             System.out.println(myJson);
             //  MessageSender.getInstance().requestAgreement(block,1);
 
-            Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner",true,3);
-            Validator validator4 = new Validator("v2","seller",true,4);
+            Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner","true",3);
+            Validator validator4 = new Validator("v2","seller","true",4);
             ArrayList<Validator> validators = new ArrayList<>();
             validators.add(validator3);
             //validators.add(validator2);
@@ -91,7 +91,7 @@ public class TestSendBlock3 {
             Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
             Object[] parameters = new Object[2];
             parameters[0] = "para1";
-            parameters[1] = 5;
+            parameters[1] = "5";
 
             TransactionInfo transactionInfo = new TransactionInfo();
             transactionInfo.setEvent("registration");
@@ -102,6 +102,8 @@ public class TestSendBlock3 {
 
             TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
                     "data","proposal1",null,transactionInfo);
+
+
 
             System.out.println(new JSONObject(proposal).toString());
 

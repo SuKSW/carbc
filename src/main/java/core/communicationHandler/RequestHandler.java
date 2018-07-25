@@ -75,6 +75,7 @@ public class RequestHandler {
         System.out.println(data);
         System.out.println("handleTransactionProposalResponse");
         TransactionResponse response = this.JSONToResponse(data);
+        System.out.println("signature in response: "+response.getSignature());
         response.addResponse();
     }
 

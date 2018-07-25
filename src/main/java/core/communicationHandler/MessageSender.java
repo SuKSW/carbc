@@ -76,7 +76,7 @@ public class MessageSender {
 
     public void sendTransactionValidation(TransactionResponse transactionResponse, int neighbourIndex) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transactionResponse",new JSONObject(transactionResponse).toString());
+        jsonObject.put("transactionResponse",new Gson().toJson(transactionResponse));
         //jsonObject.put("signature",ChainUtil.bytesToHex(signature));
         RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(jsonObject);
         blockMessage.addHeader("keepActive", "false");

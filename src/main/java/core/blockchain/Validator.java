@@ -1,18 +1,16 @@
 package core.blockchain;
 
-import java.security.PublicKey;
-
 public class Validator {
 
     private String validator;
-    private boolean isMandotory;
+    private String isMandotory;
     private String role;
     private int priority;
 
-    public Validator(String validator, String role, boolean isMandotory, int priority){
+    public Validator(String validator, String role, String isMandotory, int priority){
         this.validator = validator;
         this.role = role;
-        this.isMandotory = true;
+        this.setIsMandotory(isMandotory);
         this.priority = priority;
     }
 
@@ -20,8 +18,8 @@ public class Validator {
         return validator;
     }
 
-    public boolean isMandotory() {
-        return isMandotory;
+    public String isMandotory() {
+        return getIsMandotory();
     }
 
     public String getRole() {
@@ -37,8 +35,8 @@ public class Validator {
         this.validator = validator;
     }
 
-    public void setMandotory(boolean mandotory) {
-        isMandotory = mandotory;
+    public void setMandotory(String mandotory) {
+        setIsMandotory(mandotory);
     }
 
     public void setRole(String role) {
@@ -47,6 +45,14 @@ public class Validator {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getIsMandotory() {
+        return isMandotory;
+    }
+
+    public void setIsMandotory(String isMandotory) {
+        this.isMandotory = isMandotory;
     }
 
 

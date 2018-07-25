@@ -15,8 +15,8 @@ import java.util.Calendar;
 
 public class TransactionProposalTest {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-        Validator validator1 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner",true,3);
-        Validator validator2 = new Validator("v2","seller",true,4);
+        Validator validator1 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner","true",3);
+        Validator validator2 = new Validator("v2","seller","true",4);
         ArrayList<Validator> validators = new ArrayList<>();
         validators.add(validator1);
         //validators.add(validator2);
@@ -42,7 +42,7 @@ public class TransactionProposalTest {
         System.out.println("response in json form: " + pro);
 
         TransactionProposal response1 = new Gson().fromJson(pro,TransactionProposal.class);
-        System.out.println(response1.getpID());
+//        System.out.println(response1.getpID());
         System.out.println("converted from string response: " + new JSONObject(response1).toString() );
 //        response.addResponse();
 //

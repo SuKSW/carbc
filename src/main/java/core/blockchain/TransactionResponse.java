@@ -57,7 +57,8 @@ public class TransactionResponse {
         System.out.println("validator public key: " + KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()));
 
         System.out.println(KeyGenerator.getInstance().getPublicKey());
-
+        System.out.println("received Signature: "+ this.getSignature());
+        System.out.println("received data: "+proposalString );
         if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
                 ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
 
@@ -86,13 +87,13 @@ public class TransactionResponse {
                                 int mandatorySignCountInProposal = 0;
 
                                 for (TransactionResponse response: responseArray){
-                                    if(response.getValidator().isMandotory()){
+                                    if(Boolean.parseBoolean(response.getValidator().isMandotory())){
                                         mandatorySignCount++;
                                     }
                                 }
 
                                 for (Validator validator:proposal.getValidators()){
-                                    if (validator.isMandotory()){
+                                    if (Boolean.parseBoolean(validator.isMandotory())){
                                         mandatorySignCountInProposal++;
                                     }
                                 }
@@ -121,13 +122,13 @@ public class TransactionResponse {
                         int mandatorySignCountInProposal = 0;
 
                         for (TransactionResponse response: responseArray){
-                            if(response.getValidator().isMandotory()){
+                            if(Boolean.parseBoolean(response.getValidator().isMandotory())){
                                 mandatorySignCount++;
                             }
                         }
 
                         for (Validator validator:proposal.getValidators()){
-                            if (validator.isMandotory()){
+                            if (Boolean.parseBoolean(validator.isMandotory())){
                                 mandatorySignCountInProposal++;
                             }
                         }

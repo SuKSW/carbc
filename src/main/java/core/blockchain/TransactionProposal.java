@@ -2,6 +2,7 @@ package core.blockchain;
 
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
+import com.google.gson.Gson;
 import core.communicationHandler.MessageSender;
 import org.json.JSONObject;
 
@@ -111,8 +112,10 @@ public class TransactionProposal {
 
 
     public static String getProposalString(TransactionProposal proposal) throws NoSuchAlgorithmException {
-        JSONObject jsonProposal = new JSONObject(proposal);
-        return (jsonProposal.toString());
+//        JSONObject jsonProposal = new JSONObject(proposal);
+//        return (jsonProposal.toString());
+        Gson gson = new Gson();
+        return gson.toJson(proposal);
     }
 
 //    public TransactionProposal createTransactionProposal(){
@@ -134,7 +137,7 @@ public class TransactionProposal {
     }
 
     public TransactionResponse signProposal() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-
+        System.out.println("signature: ");
         System.out.println(TransactionProposal.getProposalString(this));
 
             ArrayList<Validator> validators = this.getValidators();
@@ -144,6 +147,13 @@ public class TransactionProposal {
                 if (validator1.getValidator().equals(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey())) ){
                     byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getProposalString(this));//signature of the proposal
                     System.out.println("signature" + ChainUtil.bytesToHex(signature));
+                    //testing
+                    String sigstring = ChainUtil.bytesToHex(signature);
+                    boolean status = ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(),
+                            ChainUtil.hexStringToByteArray(sigstring),TransactionProposal.getProposalString(this));
+                    System.out.println("**************************");
+                    System.out.println("status: "+ status);
+                    System.out.println("sending data: "+TransactionProposal.getProposalString(this));
                     Validator  validator = validator1;
                     TransactionResponse response = new TransactionResponse(this.getProposalID(), validator,ChainUtil.bytesToHex(signature));
                     System.out.println(response); //print responseye
