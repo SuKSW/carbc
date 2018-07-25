@@ -78,12 +78,10 @@ public class Consensus {
         return false;
     }
 
-    public boolean agreedTransaction(Transaction transaction) {
-        System.out.println("here");
-        System.out.println(agreedTransactiions.contains(transaction));
-        if (!agreedTransactiions.contains(transaction)) {
-            agreedTransactiions.add(transaction.getTransactionID());
-            System.out.println("Agreed Transaction added, id: "+transaction.getTransactionID());
+    public boolean agreedTransaction(String transactionID) {
+        if (!agreedTransactiions.contains(transactionID)) {
+            agreedTransactiions.add(transactionID);
+            System.out.println("Agreed Transaction added, id: "+transactionID);
             return true;
         } else {
             return false;
