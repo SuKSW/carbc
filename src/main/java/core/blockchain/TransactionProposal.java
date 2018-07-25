@@ -20,8 +20,6 @@ public class TransactionProposal {
     private String sender;
     private ArrayList<Validator> validators;
     private String data;
-    private String datas;
-    //private String pID;
     private String proposalID;
     private String timestamp;
     private TransactionInfo transactionInfo;
@@ -114,12 +112,13 @@ public class TransactionProposal {
         return gson.toJson(proposal);
     }
 
-//    public TransactionProposal createTransactionProposal(){
-//        //save proposal in proposals hashmap
-//        return this;
-//    }
 
-    
+    public static String getSigningObjectString(TransactionProposal proposal){
+        SigningObject object = new SigningObject(proposal.getSender(),proposal.getTransactionInfo());
+        Gson gson = new Gson();
+        return gson.toJson(object);
+    }
+
     public boolean sendProposal(){
         //save proposal in proposals hashmap
         proposals = TransactionProposal.getProposals();
@@ -134,22 +133,23 @@ public class TransactionProposal {
 
     public TransactionResponse signProposal() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("signature: ");
-        System.out.println(TransactionProposal.getProposalString(this));
+        //System.out.println(TransactionProposal.getProposalString(this));
 
             ArrayList<Validator> validators = this.getValidators();
             for (Validator validator1:validators){
                 System.out.println("validator1" + validator1.getValidator());
                 System.out.println("my public key" + KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()));
                 if (validator1.getValidator().equals(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey())) ){
-                    byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getProposalString(this));//signature of the proposal
+                    //byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getProposalString(this));//signature of the proposal
+                    byte[] signature = ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), TransactionProposal.getSigningObjectString(this));//signature of the proposal
                     System.out.println("signature" + ChainUtil.bytesToHex(signature));
                     //testing
                     String sigstring = ChainUtil.bytesToHex(signature);
-                    boolean status = ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(),
-                            ChainUtil.hexStringToByteArray(sigstring),TransactionProposal.getProposalString(this));
+                   // boolean status = ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(),
+                            //ChainUtil.hexStringToByteArray(sigstring),TransactionProposal.getProposalString(this));
                     System.out.println("**************************");
-                    System.out.println("status: "+ status);
-                    System.out.println("sending data: "+TransactionProposal.getProposalString(this));
+                    //System.out.println("status: "+ status);
+                    //System.out.println("sending data: "+TransactionProposal.getProposalString(this));
                     Validator  validator = validator1;
                     TransactionResponse response = new TransactionResponse(this.getProposalID(), validator,ChainUtil.bytesToHex(signature));
                     System.out.println(response); //print responseye
@@ -222,14 +222,6 @@ public class TransactionProposal {
             System.out.println("please enter yes or no");
             isValid = scanner.next();
         }
-    }
-
-    public String getDatas() {
-        return datas;
-    }
-
-    public void setDatas(String datas) {
-        this.datas = datas;
     }
 
     public String getProposalID() {
