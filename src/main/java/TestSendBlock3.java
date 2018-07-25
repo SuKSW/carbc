@@ -29,7 +29,7 @@ public class TestSendBlock3 {
          * A Config common to all: network, blockchain, etc.
          * */
         CommonConfigHolder commonConfigHolder = CommonConfigHolder.getInstance();
-        commonConfigHolder.setConfigUsingResource("peer2");
+        commonConfigHolder.setConfigUsingResource("peer3");
 
         /*
          * when initializing the network
@@ -80,7 +80,7 @@ public class TestSendBlock3 {
             //  MessageSender.getInstance().requestAgreement(block,1);
 
             Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner","true",3);
-            Validator validator4 = new Validator("v2","seller","true",4);
+            Validator validator4 = new Validator("3081f03081a806072a8648ce38040130819c024100fca682ce8e12caba26efccf7110e526db078b05edecbcd1eb4a208f3ae1617ae01f35b91a47e6df63413c5e12ed0899bcd132acd50d99151bdc43ee737592e17021500962eddcc369cba8ebb260ee6b6a126d9346e38c50240678471b27a9cf44ee91a49c5147db1a9aaf244f05a434d6486931d2d14271b9e35030b71fd73da179069b32e2935630e1c2062354d0da20a6c416e50be794ca4034300024033baf5ac27302f1e4b18424ccd867cd283766bbb79a8dc0452d80230227234a39a9c8737d38540d940c6aad0504262a74d1b62e9014f347fd6bf0f43a9d572f2","seller","true",4);
             ArrayList<Validator> validators = new ArrayList<>();
             validators.add(validator3);
             //validators.add(validator2);

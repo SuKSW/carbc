@@ -50,17 +50,18 @@ public class TransactionResponse {
 
         String proposalID = this.getProposalID();
         TransactionProposal proposal = TransactionProposal.getProposals().get(proposalID);
-        String proposalString = TransactionProposal.getProposalString(proposal);
+       // String proposalString = TransactionProposal.getProposalString(proposal);
+        String signingObjectString = TransactionProposal.getSigningObjectString(proposal);
         System.out.println(ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
-                ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString));
+                ,ChainUtil.hexStringToByteArray(this.getSignature()),signingObjectString));
 
         System.out.println("validator public key: " + KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()));
 
         System.out.println(KeyGenerator.getInstance().getPublicKey());
         System.out.println("received Signature: "+ this.getSignature());
-        System.out.println("received data: "+proposalString );
+        System.out.println("received data: "+signingObjectString );
         if (proposalID != null & ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator())
-                ,ChainUtil.hexStringToByteArray(this.getSignature()),proposalString)){ //
+                ,ChainUtil.hexStringToByteArray(this.getSignature()),signingObjectString)){ //
 
             HashMap<String, ArrayList<TransactionResponse>> responsePool = TempResponsePool.getResponsePool();
 
@@ -69,7 +70,7 @@ public class TransactionResponse {
                 System.out.println(responseArray.get(0).equals(this));
                 if (!responseArray.contains(this)) {
                     if (ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),
-                            ChainUtil.hexStringToByteArray(this.getSignature()),TransactionProposal.getProposalString(proposal))){
+                            ChainUtil.hexStringToByteArray(this.getSignature()),TransactionProposal.getSigningObjectString(proposal))){
                         boolean isContain = false;
 
                         for (TransactionResponse response1: responseArray){
@@ -111,7 +112,7 @@ public class TransactionResponse {
             } else {
 
                 if (ChainUtil.verify(KeyGenerator.getInstance().getPublicKey(this.getValidator().getValidator()),
-                        ChainUtil.hexStringToByteArray(this.getSignature()),TransactionProposal.getProposalString(proposal))){
+                        ChainUtil.hexStringToByteArray(this.getSignature()),TransactionProposal.getSigningObjectString(proposal))){
                     ArrayList<TransactionResponse> responseArray = new ArrayList<TransactionResponse>();
                     responseArray.add(this);
                     responsePool.put(proposalID, responseArray);
