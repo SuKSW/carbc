@@ -1,5 +1,7 @@
 package core.smartContract;
 
+import chainUtil.ChainUtil;
+
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -14,12 +16,13 @@ public class VehicleContract {
         return true;
     }
 
-    public void changeOwnership(String [][] validations, String data) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public boolean changeOwnership(String [][] validations, String data) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
 
         System.out.println("hello from the other side");
-        if(checkValidityOfValidation(validations, data)){
-
+        if(!checkValidityOfValidation(validations, data)){
+            return false;
         }
+        return true;
     }
 
     public boolean checkTrueOwnership(){
@@ -34,10 +37,12 @@ public class VehicleContract {
         return true;
     }
 
-    public boolean checkValidityOfValidation(String [][] validations, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+    public boolean checkValidityOfValidation(String [][] validations, String data)
+            throws NoSuchAlgorithmException, InvalidKeySpecException,
+            NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         for (int i = 0; i<validations.length;i++){
             PublicKey pubk = getPublicKey(validations[i][0]);
-            byte[] signature = validations[i][1].getBytes();
+            byte[] signature = ChainUtil.hexStringToByteArray(validations[i][1]);
 
             if (!verify(pubk, signature, data)){
                 return false;

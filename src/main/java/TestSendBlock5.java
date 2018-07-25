@@ -92,8 +92,8 @@ public class TestSendBlock5 {
 //            parameters[1] = "5";
 
             TransactionInfo transactionInfo = new TransactionInfo();
-            transactionInfo.setEvent("registration");
-            transactionInfo.setSmartContractSignature("sa");
+            transactionInfo.setEvent("ownershipTransfer");
+            transactionInfo.setSmartContractSignature("qq");
             transactionInfo.setSmartContractMethod("changeOwnership");
             transactionInfo.setData("sa");
             transactionInfo.setParameters(parameters);
