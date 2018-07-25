@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class RequestHandler {
         return requestHandler;
     }
 
-    public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+    public void handleRequest(Map headers, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException {
         System.out.println("********requestHandler*******");
         String messageType = (String)headers.get("messageType");
 //        System.out.println(messageType);
@@ -90,7 +91,7 @@ public class RequestHandler {
 
     }
 
-    public void handleAgreementResponse(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+    public void handleAgreementResponse(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException {
         System.out.println("handleAgreementResponse");
         JSONObject receivedJSONObject = new JSONObject(data);
         String JSONBlock = (String) receivedJSONObject.get("block");
@@ -101,7 +102,7 @@ public class RequestHandler {
         Consensus.getInstance().handleAgreementResponse(decodedBLock,publicKey,signature,agreement);
     }
 
-    public void handleBroadcastBlock(String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException {
+    public void handleBroadcastBlock(String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, ParseException {
         System.out.println("handleBroadcastBlock");
         JSONObject receivedJSONObject = new JSONObject(data);
         String JSONBlock = (String) receivedJSONObject.get("block");
