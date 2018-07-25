@@ -203,7 +203,8 @@ public class TransactionProposal {
     public void isValid() throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         Scanner scanner = new Scanner(System.in);
         System.out.println(this.toString());
-        System.out.println("is this valid? ");
+        System.out.println("is this valid? yes/No ");
+        System.out.println(TransactionProposal.getProposalString(this));
         String isValid = scanner.next();
         if (isValid.equalsIgnoreCase("yes")){
             String sender = this.getSender();
@@ -211,16 +212,18 @@ public class TransactionProposal {
             if (response!=null){
                 //connection and send
                 //sendResponse();
+
                 MessageSender.getInstance().sendTransactionValidation(response,1);  //should send transaction response not proposal
                 System.out.println(response);
                 System.out.println("sending response");
             }
         }
         else if (isValid.equalsIgnoreCase("no")){
-            String error = "not agreed with (proposal id)";
+            String error = "not agreed with: " + this.getProposalID();
             //connection and send
         }else {
             System.out.println("please enter yes or no");
+            isValid = scanner.next();
         }
     }
 
