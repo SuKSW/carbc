@@ -30,7 +30,7 @@ public class TestSendBlock3 {
          * A Config common to all: network, blockchain, etc.
          * */
         CommonConfigHolder commonConfigHolder = CommonConfigHolder.getInstance();
-        commonConfigHolder.setConfigUsingResource("peer3");
+        commonConfigHolder.setConfigUsingResource("peer1");
 
         /*
          * when initializing the network
@@ -109,8 +109,8 @@ public class TestSendBlock3 {
 
 
             System.out.println(new JSONObject(proposal).toString());
-
-            proposal.sendProposal();
+            System.out.println(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()));
+//            proposal.sendProposal();
 
 
 
