@@ -28,7 +28,7 @@ public class TransactionProposalTest {
         TransactionInfo transactionInfo = new TransactionInfo();
 
         TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
-                "data","proposal-1",currentTimestamp,transactionInfo);
+                "data","proposal-1",currentTimestamp.toString(),transactionInfo);
 
         //proposal.sendProposal();
 
