@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.slf4j.impl.SimpleLogger;
 import java.security.PublicKey;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class TestSendBlock2 {
@@ -65,11 +66,12 @@ public class TestSendBlock2 {
             byte[] signatue2 = ChainUtil.hexStringToByteArray("3442");
             PublicKey publicKey = KeyGenerator.getInstance().getPublicKey();
             Validator validator1 = new Validator("val1pubkey","owner","true",3);
-            Validator validator2 = new Validator("val2pubkey","seller","true",4);
+//            Validator validator2 = new Validator("val2pubkey","seller","true",4);
             ArrayList<Validation> validations = new ArrayList<>();
             validations.add(new Validation(validator1,"3332"));
-            validations.add(new Validation(validator2,"3442"));
-            BlockHeader blockHeader = new BlockHeader("101","1234","",
+            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+            System.out.println("timestamp: "+timeStamp);
+            BlockHeader blockHeader = new BlockHeader("101","1234",timeStamp,
                     "senderPubkey",123,true);
             Transaction transaction = new Transaction("senderpubkey",validations,"1456",
                     new TransactionInfo());
@@ -121,8 +123,8 @@ public class TestSendBlock2 {
 //            node.sendMessageToNeighbour(1, blockMessage);
 //            Consensus.getInstance().requestAgreementForBlock(block);
             System.out.println("collector size: "+Consensus.getInstance().agreementCollectors.size());
-//            Consensus.getInstance().requestAgreementForBlock(block);
-            MessageSender.getInstance().BroadCastBlock(block);
+            Consensus.getInstance().requestAgreementForBlock(block);
+//            MessageSender.getInstance().BroadCastBlock(block);
         } catch (Exception e) {
             e.getMessage();
         }
