@@ -70,7 +70,7 @@ public class TestSendBlock4 {
             ArrayList<Validation> validations = new ArrayList<>();
             validations.add(new Validation(validator1,"3332"));
             validations.add(new Validation(validator2,"3442"));
-            BlockHeader blockHeader = new BlockHeader("101","1234",timestamp,
+            BlockHeader blockHeader = new BlockHeader("101","1234","",
                     "senderPubkey",123,true);
             Transaction transaction = new Transaction("senderpubkey",validations,"1456",
                     new TransactionInfo());
