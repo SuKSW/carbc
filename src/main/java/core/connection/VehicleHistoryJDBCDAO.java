@@ -23,7 +23,8 @@ public class VehicleHistoryJDBCDAO {
     public void add(VehicleHistory vehicleHistory) {
         try {
             String queryString = "INSERT INTO VehicleHistory(vid, transaction_id, block_id, " +
-                    "block_hash, event, sender, validation_array, data) VALUES(?,?,?,?,?,?,?,?)";
+                    "block_hash, event, sender, validation_array, `data`, `smartContractSignature`" +
+                    ",`smartContractMethod`,`parameters`) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
@@ -35,6 +36,9 @@ public class VehicleHistoryJDBCDAO {
             ptmt.setString(6, vehicleHistory.getSender());
             ptmt.setString(7, vehicleHistory.getValidationArray());
             ptmt.setString(8, vehicleHistory.getData());
+            ptmt.setString(9, vehicleHistory.getSmartContractSignature());
+            ptmt.setString(10, vehicleHistory.getSmartContractMethod());
+            ptmt.setString(11, vehicleHistory.getParameters().toString());
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {
@@ -57,7 +61,6 @@ public class VehicleHistoryJDBCDAO {
     }
 
     public ResultSet findVehicle(VehicleHistory vehicleHistory) {
-        boolean vehicleExists = false;
         try {
             String queryString = "SELECT * FROM `VehicleHistory` WHERE `vid` = ? AND `event` = ? ORDER BY id DESC LIMIT 1";
             connection = getConnection();

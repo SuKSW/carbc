@@ -17,7 +17,7 @@ import java.util.Map;
 public class Main {
 
 
-//    public static void main(String[] args) throws Exception {
+    //    public static void main(String[] args) throws Exception {
 //        Connection connection = null;
 //        PreparedStatement ptmt = null;
 //        ResultSet resultSet = null;
@@ -202,8 +202,8 @@ public class Main {
 
 
     public boolean deploySmartContract(String signature, String contractName, String code,
-                                           String owner, String message, int block_number,
-                                           Timestamp block_timestamp, String block_hash){
+                                       String owner, String message, int block_number,
+                                       Timestamp block_timestamp, String block_hash){
 
         SmartContractJDBCDAO smartContractJDBCDAO = new SmartContractJDBCDAO();
         SmartContract smartContract = new SmartContract(signature, contractName, code,

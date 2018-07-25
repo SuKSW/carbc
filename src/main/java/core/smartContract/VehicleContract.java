@@ -14,8 +14,12 @@ public class VehicleContract {
         return true;
     }
 
-    public void changeOwnership(){
+    public void changeOwnership(String [][] validations, String data) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+
         System.out.println("hello from the other side");
+        if(checkValidityOfValidation(validations, data)){
+
+        }
     }
 
     public boolean checkTrueOwnership(){

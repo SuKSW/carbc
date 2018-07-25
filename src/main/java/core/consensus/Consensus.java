@@ -12,6 +12,7 @@ import core.communicationHandler.MessageSender;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -96,7 +97,7 @@ public class Consensus {
         System.out.println("added to agreementRequestBlocks array");
     }
 
-    public boolean handleAgreementResponse(Block block, String agreedNodePublicKey, String signatureString, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException {
+    public boolean handleAgreementResponse(Block block, String agreedNodePublicKey, String signatureString, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException, SQLException {
         PublicKey agreedNode = KeyGenerator.getInstance().getPublicKey(agreedNodePublicKey);
         byte[] signature = ChainUtil.hexStringToByteArray(signatureString);
         boolean verfied = ChainUtil.verify(agreedNode, signature, data);
@@ -111,7 +112,7 @@ public class Consensus {
         return false;
     }
 
-    public boolean addAgreedNodeForBlock(Block block, String agreedNodePublicKey) throws NoSuchAlgorithmException, ParseException {
+    public boolean addAgreedNodeForBlock(Block block, String agreedNodePublicKey) throws NoSuchAlgorithmException, ParseException, SQLException {
         System.out.println("here");
         if (getAgreementCollectorByBlock(block) == null) {
 
@@ -145,7 +146,7 @@ public class Consensus {
         return null;
     }
 
-    public boolean insertBlock(Block block) throws ParseException {
+    public boolean insertBlock(Block block) throws ParseException, SQLException {
         System.out.println("inside insert block");
         long receivedBlockNumber = block.getHeader().getBlockNumber();
         String receivedBlockTimestampString = block.getHeader().getTimestamp();
@@ -186,7 +187,7 @@ public class Consensus {
         return false;
     }
 
-    public void blockHandler(Block block) throws NoSuchAlgorithmException, ParseException {
+    public void blockHandler(Block block) throws NoSuchAlgorithmException, ParseException, SQLException {
         if (checkAgreementForBlock(block)) {
             System.out.println("Agreed block");
             insertBlock(block);
@@ -196,7 +197,7 @@ public class Consensus {
         }
     }
 
-    public void checkForEligibilty(Block block) throws NoSuchAlgorithmException, ParseException {
+    public void checkForEligibilty(Block block) throws NoSuchAlgorithmException, ParseException, SQLException {
         int threshold = 1; //get from the predefined rules
 
         if (getAgreementCollectorByBlock(block).getAgreedNodesCount() == threshold) {
