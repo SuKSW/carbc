@@ -1,5 +1,6 @@
 package core.smartContract;
 
+import com.google.gson.Gson;
 import core.blockchain.*;
 import core.connection.*;
 
@@ -10,7 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -28,28 +28,28 @@ public class Main {
 ////        Class<?> cl = databaseClassLoader.findClass("VehicleRegistration");
 //
 //    }
-    public static void main(String[] args) throws Exception {
-
-//        TransactionDummy tr = new TransactionDummy();
-//        tr.executeSmartContractMethod();
-
-//        VehicleHistoryJDBCDAO smartContractJDBCDAO = new VehicleHistoryJDBCDAO();
-//        VehicleHistory vehicleHistory = new VehicleHistory("a","a","a","a","a","a","a","a");
+//    public static void main(String[] args) throws Exception {
 //
-//        smartContractJDBCDAO.add(vehicleHistory);
-
-//        System.out.println((getClassFromFile("VehicleRegistration")));
-
-        Connection connection = null;
-        PreparedStatement ptmt = null;
-        ResultSet resultSet = null;
-
-        add(connection, ptmt);
-
-//        DatabaseClassLoader databaseClassLoader = new DatabaseClassLoader();
-//        Class<?> cl = databaseClassLoader.findClass("VehicleRegistration");
-
-    }
+////        TransactionDummy tr = new TransactionDummy();
+////        tr.executeSmartContractMethod();
+//
+////        VehicleHistoryJDBCDAO smartContractJDBCDAO = new VehicleHistoryJDBCDAO();
+////        VehicleHistory vehicleHistory = new VehicleHistory("a","a","a","a","a","a","a","a");
+////
+////        smartContractJDBCDAO.add(vehicleHistory);
+//
+////        System.out.println((getClassFromFile("VehicleRegistration")));
+//
+//        Connection connection = null;
+//        PreparedStatement ptmt = null;
+//        ResultSet resultSet = null;
+//
+//        add(connection, ptmt);
+//
+////        DatabaseClassLoader databaseClassLoader = new DatabaseClassLoader();
+////        Class<?> cl = databaseClassLoader.findClass("VehicleRegistration");
+//
+//    }
 
 
     public static void add(Connection connection, PreparedStatement ptmt) throws FileNotFoundException {
@@ -57,8 +57,6 @@ public class Main {
         File file = new File("/home/sajinie/Desktop/VehicleContract.class");
         FileInputStream input = new FileInputStream(file);
 
-        Calendar calendar = Calendar.getInstance();
-        java.util.Date now = calendar.getTime();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         try {
@@ -67,15 +65,15 @@ public class Main {
 
             connection = ConnectionFactory.getInstance().getConnection();
             ptmt = connection.prepareStatement(queryString);
-            ptmt.setString(1, "sa");
-            ptmt.setString(2, "sa");
+            ptmt.setString(1, "qq");
+            ptmt.setString(2, "VehicleContract");
             ptmt.setBinaryStream(3, input);
-            ptmt.setString(4, "sa");
-            ptmt.setString(5, "sa");
-            ptmt.setInt(6, 3);
+            ptmt.setString(4, "qq");
+            ptmt.setString(5, "qq");
+            ptmt.setInt(6, 5);
             ptmt.setTimestamp(7, timestamp);
             ptmt.setString(8, "aaa");
-            ptmt.setString(9, "sa");
+            ptmt.setString(9, "qq");
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {
@@ -148,12 +146,19 @@ public class Main {
         int noOfValidators = validation.size();
         String validationArray[][] = new String[noOfValidators][2];
         for (int i=0; i<noOfValidators; i++){
-
-
             Validation validations = validation.get(i);
             validationArray[i][0] = validations.getValidator().getValidator();
             validationArray[i][1] = validations.getSignature().toString();
         }
+
+//        int noOfParameters = parameters.length;
+//        Object[] newParameters = new Object[noOfParameters + 2];
+//        for (int i=0; i<noOfParameters+2; i++){
+////            newParameters[i]
+//        }
+
+        String signedData = getSigningObjectString(sender, transactionInfo);
+//        parameters.
 
         boolean isSuccess = false;
         if (event.equals("deployContract")){
@@ -166,7 +171,7 @@ public class Main {
                     smartContractSignature, smartContractMethod, parameters);
 
 //            System.out.println("other event = " + event);
-            isSuccess = addVehicleRecord(vehicleHistoryJDBCDAO, vehicleHistory);
+            isSuccess = addVehicleRecord(signedData, validationArray, vehicleHistoryJDBCDAO, vehicleHistory);
             if(isSuccess){
                 vehicleHistoryJDBCDAO.add(vehicleHistory);
             }
@@ -175,7 +180,7 @@ public class Main {
 
     }
 
-    public boolean addVehicleRecord(VehicleHistoryJDBCDAO vehicleHistoryJDBCDAO, VehicleHistory vehicleHistory) throws SQLException {
+    public boolean addVehicleRecord(String signedData, String[][] validations, VehicleHistoryJDBCDAO vehicleHistoryJDBCDAO, VehicleHistory vehicleHistory) throws SQLException {
         //find contract
         SmartContractJDBCDAO smartContractJDBCDAO = new SmartContractJDBCDAO();
         Map contract = smartContractJDBCDAO.getSmartContract(vehicleHistory.getSmartContractSignature());
@@ -194,8 +199,9 @@ public class Main {
             vehicleHistory.setVid(vID);
             vehicleHistoryJDBCDAO.add(vehicleHistory);
         }else{
-            boolean success = databaseClassLoader.findClass((byte[])contract.get("code"),
-                    (String)contract.get("contractName"), vehicleHistory.getParameters());
+            boolean success = databaseClassLoader.findClass(signedData, validations,
+                    (byte[])contract.get("code"), (String)contract.get("contractName"),
+                    vehicleHistory.getParameters());
         }
         return true;
     }
@@ -215,6 +221,12 @@ public class Main {
             return true;
         }
         return false;
+    }
+
+    public String getSigningObjectString(String sender, TransactionInfo transactionInfo){
+        SigningObject object = new SigningObject(sender, transactionInfo);
+        Gson gson = new Gson();
+        return gson.toJson(object);
     }
 
 }
