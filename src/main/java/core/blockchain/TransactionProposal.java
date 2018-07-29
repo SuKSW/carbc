@@ -5,13 +5,11 @@ import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
 import core.communicationHandler.MessageSender;
 import core.consensus.Consensus;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.*;
-import java.sql.Timestamp;
 import java.security.spec.InvalidKeySpecException;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -24,6 +22,7 @@ public class TransactionProposal {
     private String timestamp;
     private TransactionInfo transactionInfo;
     private Validation validation;
+    private String isValid;
 
     //to store send proposals
     private static HashMap<String,TransactionProposal> proposals;
@@ -155,7 +154,7 @@ public class TransactionProposal {
                     System.out.println(response); //print responseye
                     return response;
                 }else{
-                    System.out.println("Transaction response -> sign proposal -> not correct validator");
+                    System.out.println("Transaction proposal -> sign proposal -> not correct validator");
                 }
             }
        return null;
@@ -179,10 +178,12 @@ public class TransactionProposal {
 
         Transaction transaction = new Transaction(this.getSender(),validations, this.getProposalID(),this.getTransactionInfo());
 
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String timestampString = String.valueOf(timestamp);
+        //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        //String timestampString = String.valueOf(timestamp);
+        String timeStampStr = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+
         byte[] hash = ChainUtil.getHash(transaction.toString());
-        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchain().getBlockchainArray().getLast().getHeader().getHash(),timestampString,this.sender,Blockchain.getBlockchain().getBlockchainArray().size()+1,true);
+        BlockHeader blockHeader = new BlockHeader("1",Blockchain.getBlockchain().getBlockchainArray().getLast().getHeader().getHash(),timeStampStr,this.sender,Blockchain.getBlockchain().getBlockchainArray().size()+1,true);
 
         Block block = new Block(blockHeader,transaction);
         //convert to string
@@ -202,8 +203,9 @@ public class TransactionProposal {
         System.out.println(this.toString());
         System.out.println("is this valid? yes/No ");
         System.out.println(TransactionProposal.getProposalString(this));
-        String isValid = scanner.next();
-        if (isValid.equalsIgnoreCase("yes")){
+        //String isValid = scanner.next();
+
+        if (this.isValid.equalsIgnoreCase("yes")){
             String sender = this.getSender();
             TransactionResponse response =  this.signProposal();
             if (response!=null){
@@ -215,12 +217,12 @@ public class TransactionProposal {
                 System.out.println("sending response");
             }
         }
-        else if (isValid.equalsIgnoreCase("no")){
+        else if (this.isValid.equalsIgnoreCase("no")){
             String error = "not agreed with: " + this.getProposalID();
             //connection and send
         }else {
             System.out.println("please enter yes or no");
-            isValid = scanner.next();
+            setIsValid(scanner.next());
         }
     }
 
@@ -238,5 +240,13 @@ public class TransactionProposal {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid;
     }
 }

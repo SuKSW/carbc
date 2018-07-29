@@ -151,8 +151,7 @@ public class Consensus {
         long receivedBlockNumber = block.getHeader().getBlockNumber();
         String receivedBlockTimestampString = block.getHeader().getTimestamp();
 
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
         Date parsedDate = dateFormat.parse(receivedBlockTimestampString);
         Timestamp receivedBlockTimestamp = new java.sql.Timestamp(parsedDate.getTime());
 

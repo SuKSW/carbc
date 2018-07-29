@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.slf4j.impl.SimpleLogger;
 import java.security.PublicKey;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -80,15 +81,17 @@ public class TestSendBlock3 {
             //  MessageSender.getInstance().requestAgreement(block,1);
 
             Validator validator3 = new Validator(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),"owner","true",3);
-            Validator validator4 = new Validator("3081f03081a806072a8648ce38040130819c024100fca682ce8e12caba26efccf7110e526db078b05edecbcd1eb4a208f3ae1617ae01f35b91a47e6df63413c5e12ed0899bcd132acd50d99151bdc43ee737592e17021500962eddcc369cba8ebb260ee6b6a126d9346e38c50240678471b27a9cf44ee91a49c5147db1a9aaf244f05a434d6486931d2d14271b9e35030b71fd73da179069b32e2935630e1c2062354d0da20a6c416e50be794ca4034300024033baf5ac27302f1e4b18424ccd867cd283766bbb79a8dc0452d80230227234a39a9c8737d38540d940c6aad0504262a74d1b62e9014f347fd6bf0f43a9d572f2","seller","true",4);
+            Validator validator4 = new Validator("3081f13081a806072a8648ce38040130819c024100fca682ce8e12caba26efccf7110e526db078b05edecbcd1eb4a208f3ae1617ae01f35b91a47e6df63413c5e12ed0899bcd132acd50d99151bdc43ee737592e17021500962eddcc369cba8ebb260ee6b6a126d9346e38c50240678471b27a9cf44ee91a49c5147db1a9aaf244f05a434d6486931d2d14271b9e35030b71fd73da179069b32e2935630e1c2062354d0da20a6c416e50be794ca4034400024100d1f13f9b315e6fa41e1920ae2d875f28f7129ab4f8e29eb12783d238430585c225e7d05f1e84c2218abb65a9dc5bc7b8df03012dffc5dececb18f76a64440335","seller","true",4);
             ArrayList<Validator> validators = new ArrayList<>();
-            validators.add(validator3);
+            validators.add(validator4);
             //validators.add(validator2);
             Calendar calendar = Calendar.getInstance();
             java.util.Date now = calendar.getTime();
 
             //java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
             Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
+            String timeStampStr = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+            System.out.println("timestamp:  "+timeStampStr);
             Object[] parameters = new Object[2];
             parameters[0] = "para1";
             parameters[1] = "5";
@@ -101,7 +104,7 @@ public class TestSendBlock3 {
             transactionInfo.setParameters(parameters);
 
             TransactionProposal proposal = new TransactionProposal(KeyGenerator.getInstance().getEncodedPublicKeyString(KeyGenerator.getInstance().getPublicKey()),validators,
-                    "data","proposal1",String.valueOf(timestamp1),transactionInfo);
+                    "data","proposal1",timeStampStr,transactionInfo);
 
 
 

@@ -5,6 +5,7 @@ import chainUtil.ChainUtil;
 import java.security.PublicKey;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Block {
@@ -59,10 +60,11 @@ public class Block {
     public static Block createGenesis(){
         Calendar calendar = Calendar.getInstance();
         java.util.Date now = calendar.getTime();
-        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-        String currentTimestampString = String.valueOf(currentTimestamp);
+        String timeStampStr = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
 
-        BlockHeader blockHeader = new BlockHeader("1","genesis Block",currentTimestampString,"developer",
+        //String currentTimestampString = String.valueOf(currentTimestamp);
+
+        BlockHeader blockHeader = new BlockHeader("1","genesis Block",timeStampStr,"developer",
                 (long)1,true);
         Block genesisBlock = new Block(blockHeader);
         return genesisBlock;
