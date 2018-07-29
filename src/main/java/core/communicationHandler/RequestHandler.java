@@ -1,5 +1,7 @@
 package core.communicationHandler;
 
+import UI.InitiateTransaction;
+import UI.ValidateProposal;
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import com.google.gson.Gson;
@@ -10,6 +12,8 @@ import org.json.JSONObject;
 import core.blockchain.*;
 //import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -69,7 +73,18 @@ public class RequestHandler {
         System.out.println("handleTransactionProposalRequest");
         TransactionProposal proposal = this.JSONToProposal(data);
         System.out.println(proposal.getValidators());
-        proposal.isValid();
+
+        JFrame frame = new JFrame("Validate Transaction");
+
+        frame.setContentPane(new ValidateProposal(proposal).getPanel());
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.pack();
+
+        frame.setVisible(true);
+
+        //proposal.isValid();
     }
 
     public void handleTransactionProposalResponse(String data) throws NoSuchAlgorithmException, IOException,
