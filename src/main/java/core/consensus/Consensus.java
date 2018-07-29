@@ -130,6 +130,7 @@ public class Consensus {
         long receivedBlockNumber = block.getHeader().getBlockNumber();
         String receivedBlockTimestampString = block.getHeader().getTimestamp();
 
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
         Date parsedDate = dateFormat.parse(receivedBlockTimestampString);
         Timestamp receivedBlockTimestamp = new java.sql.Timestamp(parsedDate.getTime());
@@ -200,7 +201,7 @@ public class Consensus {
 
     public boolean sendAgreementForBlock(Block block, String agreed, int neighbourIndex) throws
             InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        MessageSender.getInstance().sendAgreement(block, 1, agreed,
+        MessageSender.getInstance().sendAgreement(block, 2, agreed,
                 ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), agreed));
         //remove from agreementRequestBlocks array
         return true;
