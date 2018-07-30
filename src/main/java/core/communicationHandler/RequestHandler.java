@@ -1,5 +1,6 @@
 package core.communicationHandler;
 
+import UI.BlockStatusUI;
 import UI.InitiateTransaction;
 import UI.ValidateProposal;
 import chainUtil.ChainUtil;
