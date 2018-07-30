@@ -1,14 +1,17 @@
 
 package core.consensus;
 
+import UI.AgreementRequest;
+import UI.BlockStatusUI;
+import UI.BlockStatusUI2;
 import chainUtil.ChainUtil;
 import chainUtil.KeyGenerator;
 import core.blockchain.Block;
 import core.blockchain.Blockchain;
-import core.blockchain.Transaction;
 import core.blockchain.Validation;
 import core.communicationHandler.MessageSender;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -18,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Consensus {
 
@@ -53,21 +57,6 @@ public class Consensus {
         return true;
     }
 
-    public boolean responseForBlockAgreement(Block block, String agreed, int neighbourIndex) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        if (checkAgreementForBlock(block)) {
-            sendAgreementForBlock(block, agreed, neighbourIndex);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean sendAgreementForBlock(Block block, String agreed, int neighbourIndex) throws
-            InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        MessageSender.getInstance().sendAgreement(block, 1, agreed,
-                ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), agreed));
-        //remove from agreementRequestBlocks array
-        return true;
-    }
 
     public boolean checkAgreementForBlock(Block block) {
         System.out.println("inside check agreement");
@@ -97,7 +86,9 @@ public class Consensus {
         System.out.println("added to agreementRequestBlocks array");
     }
 
-    public boolean handleAgreementResponse(Block block, String agreedNodePublicKey, String signatureString, String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException, SQLException {
+    public boolean handleAgreementResponse(Block block, String agreedNodePublicKey, String signatureString, String data)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException,
+            SignatureException, InvalidKeyException, ParseException, SQLException {
         PublicKey agreedNode = KeyGenerator.getInstance().getPublicKey(agreedNodePublicKey);
         byte[] signature = ChainUtil.hexStringToByteArray(signatureString);
         boolean verfied = ChainUtil.verify(agreedNode, signature, data);
@@ -105,7 +96,6 @@ public class Consensus {
             System.out.println("response verified");
             boolean status = addAgreedNodeForBlock(block, agreedNodePublicKey);
             if (status) {
-                System.out.println("agreedNOde added successfully");
                 return true;
             }
         }
@@ -113,17 +103,11 @@ public class Consensus {
     }
 
     public boolean addAgreedNodeForBlock(Block block, String agreedNodePublicKey) throws NoSuchAlgorithmException, ParseException, SQLException {
-        System.out.println("here");
-        if (getAgreementCollectorByBlock(block) == null) {
-
-            System.out.println(block.getHeader().getBlockNumber());
-            System.out.println("null value");
-        }
         if (getAgreementCollectorByBlock(block) != null) {
             boolean status = getAgreementCollectorByBlock(block).addAgreedNode(agreedNodePublicKey);
             if (status) {
-                checkForEligibilty(block);
                 System.out.println("agreement added successfully ");
+                checkForEligibilty(block);
                 return true;
             } else {
                 System.out.println("agreement not added");
@@ -151,13 +135,14 @@ public class Consensus {
         long receivedBlockNumber = block.getHeader().getBlockNumber();
         String receivedBlockTimestampString = block.getHeader().getTimestamp();
 
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
         Date parsedDate = dateFormat.parse(receivedBlockTimestampString);
         Timestamp receivedBlockTimestamp = new java.sql.Timestamp(parsedDate.getTime());
 
-
         if (!blockExistence(block)) {
             Blockchain.getBlockchain().addBlock(block);
+            JOptionPane.showMessageDialog(null,"Block Added Successfully");
             System.out.println("block added successfully");
             return true;
         } else {
@@ -169,6 +154,7 @@ public class Consensus {
             if (exsitingTimeStamp.after(receivedBlockTimestamp)) {
                 Blockchain.getBlockchain().rollBack(receivedBlockNumber);
                 Blockchain.getBlockchain().addBlock(block);
+                JOptionPane.showMessageDialog(null,"Block Added Successfully");
                 System.out.println("block added successfully");
                 return true;
             } else if (exsitingTimeStamp.equals(receivedBlockTimestamp)) {
@@ -188,9 +174,15 @@ public class Consensus {
 
     public void blockHandler(Block block) throws NoSuchAlgorithmException, ParseException, SQLException {
         if (checkAgreementForBlock(block)) {
+            String status = "Agreed block";
+            BlockStatusUI blockStatusUI = new BlockStatusUI(block);
+            blockStatusUI.runBlockStatusUI(status);
             System.out.println("Agreed block");
-            insertBlock(block);
+            //insertBlock(block);
         } else {
+            String status = "Not agreed block. requesting agreements";
+            BlockStatusUI2 blockStatusUI = new BlockStatusUI2(block);
+            blockStatusUI.runBlockStatusUI2();
             System.out.println("Not agreed block. requesting agreements");
             requestAgreementForBlock(block);
         }
@@ -200,6 +192,7 @@ public class Consensus {
         int threshold = 1; //get from the predefined rules
 
         if (getAgreementCollectorByBlock(block).getAgreedNodesCount() == threshold) {
+            JOptionPane.showMessageDialog(null,"Agreements received upto threshold level");
             System.out.println("Agreements received upto threshold level");
             insertBlock(block);
         }
@@ -210,6 +203,40 @@ public class Consensus {
         System.out.println("agreement collector added");
         System.out.println("agreemenCollector id: " + agreementCollector.getId());
         return agreementCollectors.add(agreementCollector);
+    }
+
+    public boolean responseForBlockAgreement(Block block, String agreed, int neighbourIndex) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        if (checkAgreementForBlock(block)) {
+            sendAgreementForBlock(block, agreed, neighbourIndex);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean sendAgreementForBlock(Block block, String agreed, int neighbourIndex) throws
+            InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        MessageSender.getInstance().sendAgreement(block, 1, agreed,
+                ChainUtil.sign(KeyGenerator.getInstance().getPrivateKey(), agreed));
+        //remove from agreementRequestBlocks array
+        return true;
+    }
+
+    public void handleAgreementRequest(Block block) throws NoSuchAlgorithmException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+        AgreementRequest ar = new AgreementRequest(block);
+        ar.runAgreementRequestUI();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("is this valid? yes/No ");
+        String isValid = scanner.next();
+        if (isValid.equalsIgnoreCase("yes")){
+            sendAgreementForBlock(block,"agreed", 1);
+        }
+        else if (isValid.equalsIgnoreCase("no")){
+            System.out.println("Not Agreed");
+            //connection and send
+        }else {
+            System.out.println("please enter yes or no");
+            isValid = scanner.next();
+        }
     }
 
 }

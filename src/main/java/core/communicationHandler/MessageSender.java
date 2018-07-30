@@ -45,6 +45,7 @@ public class MessageSender {
     }
 
     public void requestAgreement(Block block, int neighbourIndex) {
+        System.out.println("Agreement request send");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("block",blockToJSON(block).toString());
         RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(jsonObject);

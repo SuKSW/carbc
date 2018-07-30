@@ -1,5 +1,6 @@
 package core.communicationHandler;
 
+import UI.BlockStatusUI;
 import UI.InitiateTransaction;
 import UI.ValidateProposal;
 import chainUtil.ChainUtil;
@@ -97,19 +98,20 @@ public class RequestHandler {
     }
 
     public void handleAgreementRequest(String data) throws InvalidKeySpecException, NoSuchAlgorithmException,
-            NoSuchProviderException, IOException {
-       //notify user, get command line argument, if positive sendAgreement
-        // add to array
-        Block requestAgreementBlock = JSONStringToBlock(data);
-//        Consensus.getInstance().responseForBlockAgreement()
+            NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         System.out.println("handleAgreementRequest");
-        System.out.println("block received for agreement. Respond");
-
+        JSONObject receivedJSONObject = new JSONObject(data);
+        String JSONBlock = (String) receivedJSONObject.get("block");
+        System.out.println("Received Block");
+        System.out.println(JSONBlock);
+        Block decodedBLock = JSONStringToBlock(JSONBlock);
+        Consensus.getInstance().handleAgreementRequest(decodedBLock);
     }
 
     public void handleAgreementResponse(String data) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException, ParseException, SQLException {
         System.out.println("handleAgreementResponse");
         JSONObject receivedJSONObject = new JSONObject(data);
+        System.out.println(receivedJSONObject.toString());
         String JSONBlock = (String) receivedJSONObject.get("block");
         String agreement = (String) receivedJSONObject.get("agreement");
         String signature = (String) receivedJSONObject.get("signature");
