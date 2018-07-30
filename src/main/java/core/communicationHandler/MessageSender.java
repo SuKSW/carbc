@@ -39,7 +39,7 @@ public class MessageSender {
         RequestMessage blockMessage = BlockMessageCreator.createBlockMessage(jsonObject);
         blockMessage.addHeader("keepActive", "false");
         blockMessage.addHeader("messageType", "BlockBroadcast");
-        for(int i = 1; i< 3; i++) {
+        for(int i = 1; i< 2; i++) {
             Node.getInstance().sendMessageToNeighbour(i, blockMessage);
         }
     }
