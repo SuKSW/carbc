@@ -51,14 +51,18 @@ public class InitiateTransaction {
                 Object[] parameters = new Object[2];
                 parameters[0] = (para1Text.getText());
                 parameters[1] = (para2Text.getText());
-                Validator validator = new Validator(validatorPubKeyText.getText(), roleText.getText(), isM, Integer.parseInt(priorityText.getText()));
+                Validator validator = new Validator(validatorPubKeyText.getText().trim(), roleText.getText(), isM, Integer.parseInt(priorityText.getText()));
                 ArrayList<Validator> validators = new ArrayList();
                 validators.add(validator);
 
                 TransactionInfo transactionInfo = new TransactionInfo();
-                transactionInfo.setEvent(eventText.getText());
+                transactionInfo.setEvent(eventText.getText().trim());
                 transactionInfo.setVehicleId(vehicleIDText.getText());
                 transactionInfo.setParameters(parameters);
+                transactionInfo.setSmartContractName("VehicleContract");
+                transactionInfo.setSmartContractMethod("changeOwnership");
+                transactionInfo.setSmartContractSignature("qq");
+                
 
                 String timeStampStr = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
