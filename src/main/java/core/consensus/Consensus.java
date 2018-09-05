@@ -50,7 +50,7 @@ public class Consensus {
         ArrayList<Validation> validations = block.getTransaction().getValidations();
         for (Validation validation : validations) {
             validators.add(validation.getValidator().getValidator());
-            MessageSender.getInstance().requestAgreement(block, 1);
+            MessageSender.getInstance().requestAgreement(block, 2);
         }
 
         //send the block to validators in the validators array for agreements
