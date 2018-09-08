@@ -29,7 +29,7 @@ public class TestSendBlock {
         * A Config common to all: network, blockchain, etc.
         * */
         CommonConfigHolder commonConfigHolder = CommonConfigHolder.getInstance();
-        commonConfigHolder.setConfigUsingResource("peer3");
+        commonConfigHolder.setConfigUsingResource("peer1");
 
         /*
         * when initializing the network
